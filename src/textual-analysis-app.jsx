@@ -311,6 +311,11 @@ const VISUALIZATION_INFO = {
     description: 'Classificação das palavras em positivas, negativas ou neutras com base em léxico de sentimentos.',
     tooltip: 'Usa léxico de sentimentos em português com ~200 palavras rotuladas. Conta ocorrências de cada polaridade, calcula percentuais e score geral: (positivas - negativas) / total.'
   },
+  sankey: {
+    title: 'Diagrama Sankey',
+    description: 'Fluxos de coocorrência entre palavras representados como diagrama Sankey. Mostra a intensidade das conexões entre termos por largura da banda.',
+    tooltip: 'Usa as coocorrências calculadas (pares de palavras que aparecem juntas em janela de N tokens). As bandas conectam palavras-fonte a palavras-alvo, com largura proporcional à frequência da coocorrência.'
+  },
   tfidf: {
     title: 'TF-IDF',
     description: 'Identifica palavras distintivas de cada documento, penalizando termos muito comuns.',
@@ -5806,6 +5811,280 @@ const SentimentVisualization = ({ sentiment, width = 700, height = 400 }) => {
   );
 };
 
+// ==================== SANKEY DIAGRAM ====================
+
+const SankeyVisualization = ({ cooccurrences, words, width = 900, height = 600 }) => {
+  const [maxLinks, setMaxLinks] = useState(30);
+  const [minWeight, setMinWeight] = useState(2);
+  const [hoveredLink, setHoveredLink] = useState(null);
+  const [hoveredNode, setHoveredNode] = useState(null);
+
+  const sankeyData = useMemo(() => {
+    if (!cooccurrences || cooccurrences.length === 0) return null;
+
+    const filtered = cooccurrences
+      .filter(c => c.weight >= minWeight)
+      .slice(0, maxLinks);
+
+    if (filtered.length === 0) return null;
+
+    // Collect unique nodes
+    const nodeSet = new Set();
+    filtered.forEach(c => { nodeSet.add(c.source); nodeSet.add(c.target); });
+    const nodeList = [...nodeSet];
+    const nodeIndex = {};
+    nodeList.forEach((n, i) => { nodeIndex[n] = i; });
+
+    // Build frequency map from words prop
+    const freqMap = {};
+    if (words) words.forEach(w => { freqMap[w.word] = w.count; });
+
+    // Compute node values (sum of link weights)
+    const nodeValues = nodeList.map(n => {
+      let val = 0;
+      filtered.forEach(c => {
+        if (c.source === n) val += c.weight;
+        if (c.target === n) val += c.weight;
+      });
+      return { id: n, value: val, freq: freqMap[n] || val };
+    });
+
+    // Sort nodes by value descending for better layout
+    nodeValues.sort((a, b) => b.value - a.value);
+    const sortedNodeIds = nodeValues.map(n => n.id);
+    const sortedIndex = {};
+    sortedNodeIds.forEach((n, i) => { sortedIndex[n] = i; });
+
+    // Assign columns: source nodes on left (col 0), target-only on right (col 1)
+    // Better: use a simple two-column approach based on link directionality
+    const sourceSet = new Set(filtered.map(c => c.source));
+    const targetSet = new Set(filtered.map(c => c.target));
+    const leftOnly = [...sourceSet].filter(n => !targetSet.has(n));
+    const rightOnly = [...targetSet].filter(n => !sourceSet.has(n));
+    const both = [...nodeSet].filter(n => sourceSet.has(n) && targetSet.has(n));
+
+    // Three columns: left-only, both, right-only
+    const cols = [
+      leftOnly.length > 0 ? leftOnly : [],
+      both,
+      rightOnly.length > 0 ? rightOnly : []
+    ].filter(c => c.length > 0);
+
+    if (cols.length < 2) {
+      // Force two columns by splitting nodes
+      const half = Math.ceil(sortedNodeIds.length / 2);
+      cols.length = 0;
+      cols.push(sortedNodeIds.slice(0, half));
+      cols.push(sortedNodeIds.slice(half));
+    }
+
+    const nodeMap = {};
+    nodeValues.forEach(n => { nodeMap[n.id] = n; });
+
+    // Layout
+    const margin = { top: 30, right: 140, bottom: 30, left: 140 };
+    const innerW = width - margin.left - margin.right;
+    const innerH = height - margin.top - margin.bottom;
+    const colWidth = 18;
+    const colSpacing = innerW / (cols.length - 1 || 1);
+
+    // Position nodes in each column
+    const nodePositions = {};
+    cols.forEach((col, ci) => {
+      const colTotal = col.reduce((s, n) => s + (nodeMap[n]?.value || 1), 0);
+      const gap = 6;
+      const availH = innerH - gap * (col.length - 1);
+      let y = margin.top;
+      // Sort column by value
+      const sorted = [...col].sort((a, b) => (nodeMap[b]?.value || 0) - (nodeMap[a]?.value || 0));
+      sorted.forEach(n => {
+        const h = Math.max(8, ((nodeMap[n]?.value || 1) / colTotal) * availH);
+        nodePositions[n] = {
+          x: margin.left + ci * colSpacing,
+          y: y,
+          h: h,
+          col: ci,
+          value: nodeMap[n]?.value || 1,
+          freq: nodeMap[n]?.freq || 0
+        };
+        y += h + gap;
+      });
+    });
+
+    // Build links with positions
+    const maxW = Math.max(...filtered.map(c => c.weight));
+    const maxBandWidth = 40;
+    const links = filtered.map(c => {
+      const sp = nodePositions[c.source];
+      const tp = nodePositions[c.target];
+      if (!sp || !tp) return null;
+      const bandW = Math.max(2, (c.weight / maxW) * maxBandWidth);
+      return {
+        source: c.source,
+        target: c.target,
+        weight: c.weight,
+        bandWidth: bandW,
+        sx: sp.x + colWidth,
+        sy: sp.y + sp.h / 2,
+        tx: tp.x,
+        ty: tp.y + tp.h / 2,
+      };
+    }).filter(Boolean);
+
+    // Distribute links along node heights to avoid overlap
+    const sourceOffsets = {};
+    const targetOffsets = {};
+    Object.keys(nodePositions).forEach(n => {
+      sourceOffsets[n] = nodePositions[n].y;
+      targetOffsets[n] = nodePositions[n].y;
+    });
+
+    links.sort((a, b) => {
+      const ay = nodePositions[a.target]?.y || 0;
+      const by = nodePositions[b.target]?.y || 0;
+      return ay - by;
+    });
+
+    links.forEach(l => {
+      const sp = nodePositions[l.source];
+      const tp = nodePositions[l.target];
+      if (!sp || !tp) return;
+      l.sy = sourceOffsets[l.source] + l.bandWidth / 2;
+      sourceOffsets[l.source] += l.bandWidth + 1;
+      l.ty = targetOffsets[l.target] + l.bandWidth / 2;
+      targetOffsets[l.target] += l.bandWidth + 1;
+      l.sx = sp.x + colWidth;
+      l.tx = tp.x;
+    });
+
+    return { nodes: nodePositions, links, cols, colWidth, margin };
+  }, [cooccurrences, words, maxLinks, minWeight, width, height]);
+
+  if (!sankeyData) {
+    return (
+      <div className="flex items-center justify-center h-64 text-neutral-400">
+        <p>Sem dados de coocorrência suficientes para gerar diagrama Sankey.</p>
+      </div>
+    );
+  }
+
+  const { nodes, links, colWidth, margin } = sankeyData;
+
+  // Color palette
+  const palette = [
+    '#6366f1', '#8b5cf6', '#a78bfa', '#c084fc', '#e879f9',
+    '#f472b6', '#fb7185', '#f97316', '#eab308', '#22c55e',
+    '#14b8a6', '#06b6d4', '#3b82f6', '#6366f1', '#8b5cf6'
+  ];
+  const nodeIds = Object.keys(nodes);
+  const getColor = (id) => palette[nodeIds.indexOf(id) % palette.length];
+
+  return (
+    <div>
+      <div className="flex flex-wrap gap-4 mb-4 items-center text-sm text-neutral-400">
+        <label className="flex items-center gap-2">
+          Conexões:
+          <input type="range" min={5} max={80} value={maxLinks}
+            onChange={e => setMaxLinks(+e.target.value)} className="w-24" />
+          <span className="text-neutral-300 font-mono">{maxLinks}</span>
+        </label>
+        <label className="flex items-center gap-2">
+          Peso mín:
+          <input type="range" min={1} max={10} value={minWeight}
+            onChange={e => setMinWeight(+e.target.value)} className="w-24" />
+          <span className="text-neutral-300 font-mono">{minWeight}</span>
+        </label>
+      </div>
+      <ZoomPanSVG width={width} height={height}>
+        <svg width={width} height={height}>
+          <defs>
+            {links.map((l, i) => (
+              <linearGradient key={`grad-${i}`} id={`sg-${i}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor={getColor(l.source)} stopOpacity={0.6} />
+                <stop offset="100%" stopColor={getColor(l.target)} stopOpacity={0.6} />
+              </linearGradient>
+            ))}
+          </defs>
+
+          {/* Links */}
+          {links.map((l, i) => {
+            const midX = (l.sx + l.tx) / 2;
+            const path = `M${l.sx},${l.sy} C${midX},${l.sy} ${midX},${l.ty} ${l.tx},${l.ty}`;
+            const isHovered = hoveredLink === i || hoveredNode === l.source || hoveredNode === l.target;
+            return (
+              <path
+                key={`link-${i}`}
+                d={path}
+                fill="none"
+                stroke={`url(#sg-${i})`}
+                strokeWidth={l.bandWidth}
+                opacity={hoveredLink !== null || hoveredNode !== null ? (isHovered ? 0.85 : 0.12) : 0.5}
+                onMouseEnter={() => setHoveredLink(i)}
+                onMouseLeave={() => setHoveredLink(null)}
+                style={{ transition: 'opacity 0.2s', cursor: 'pointer' }}
+              />
+            );
+          })}
+
+          {/* Nodes */}
+          {Object.entries(nodes).map(([id, n]) => {
+            const isHovered = hoveredNode === id ||
+              links.some((l, i) => (l.source === id || l.target === id) && hoveredLink === i);
+            return (
+              <g key={`node-${id}`}
+                onMouseEnter={() => setHoveredNode(id)}
+                onMouseLeave={() => setHoveredNode(null)}
+                style={{ cursor: 'pointer' }}
+              >
+                <rect
+                  x={n.x}
+                  y={n.y}
+                  width={colWidth}
+                  height={n.h}
+                  rx={3}
+                  fill={getColor(id)}
+                  opacity={hoveredNode !== null ? (isHovered || hoveredNode === id ? 1 : 0.3) : 0.85}
+                  style={{ transition: 'opacity 0.2s' }}
+                />
+                <text
+                  x={n.col === 0 ? n.x - 6 : n.x + colWidth + 6}
+                  y={n.y + n.h / 2}
+                  textAnchor={n.col === 0 ? 'end' : 'start'}
+                  dominantBaseline="middle"
+                  fill={hoveredNode === id ? '#fff' : '#a3a3a3'}
+                  fontSize={11}
+                  fontWeight={hoveredNode === id ? 600 : 400}
+                >
+                  {id}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Tooltip for hovered link */}
+          {hoveredLink !== null && links[hoveredLink] && (
+            <g>
+              <rect
+                x={(links[hoveredLink].sx + links[hoveredLink].tx) / 2 - 60}
+                y={(links[hoveredLink].sy + links[hoveredLink].ty) / 2 - 22}
+                width={120} height={28} rx={6}
+                fill="rgba(0,0,0,0.85)" stroke="#555" strokeWidth={0.5}
+              />
+              <text
+                x={(links[hoveredLink].sx + links[hoveredLink].tx) / 2}
+                y={(links[hoveredLink].sy + links[hoveredLink].ty) / 2 - 5}
+                textAnchor="middle" fill="#e5e5e5" fontSize={10}
+              >
+                {links[hoveredLink].source} → {links[hoveredLink].target}: {links[hoveredLink].weight}
+              </text>
+            </g>
+          )}
+        </svg>
+      </ZoomPanSVG>
+    </div>
+  );
+};
+
 // ==================== COMPONENTE DE EXPORTAÇÃO UNIVERSAL ====================
 
 const ExportVisualizationButton = ({ vizId, filename, data }) => {
@@ -8494,6 +8773,7 @@ export default function TextAnalysisApp() {
     { id: 'network', label: 'Rede', icon: Network, disabled: !analysisResults },
     { id: 'bigrams', label: 'Bigramas', icon: MessageCircle, disabled: !bigramAnalysis },
     { id: 'netadvanced', label: 'Centralidade', icon: Target, disabled: !networkAnalysis },
+    { id: 'sankey', label: 'Sankey', icon: GitBranch, disabled: !analysisResults },
     { id: 'heatmap', label: 'Heatmap', icon: Grid, disabled: !analysisResults },
     { id: 'afc', label: 'AFC', icon: Sparkles, disabled: !afcData },
     { id: 'associations', label: 'Associações', icon: Activity, disabled: !statisticalAnalysis },
@@ -8683,7 +8963,7 @@ export default function TextAnalysisApp() {
         {activeTab === 'upload' && (
           <div className="space-y-8">
             {/* ========== GERENCIADOR DE CORPUS ========== */}
-            <div className=`${isDarkMode ? 'bg-neutral-900 border-neutral-700' : 'bg-white border-neutral-200'} rounded-2xl p-6 border`>
+            <div className={`${isDarkMode ? 'bg-neutral-900 border-neutral-700' : 'bg-white border-neutral-200'} rounded-2xl p-6 border`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Layers className="w-5 h-5 text-neutral-400" />
@@ -8810,12 +9090,6 @@ export default function TextAnalysisApp() {
                       .{ext.toLowerCase()}
                     </span>
                   ))}
-                    </span>
-                  ].map(format => (
-                    <span key={format.ext} className={`text-xs px-2 py-1 rounded ${isDarkMode ? format.colorDark : format.colorLight}`}>
-                      .{format.ext.toLowerCase()}
-                    </span>
-                  ))}
                 </div>
               </div>
             </div>
@@ -8856,7 +9130,7 @@ export default function TextAnalysisApp() {
             )}
             
             {/* ========== GERENCIADOR DE STOPWORDS ========== */}
-            <div className=`${isDarkMode ? 'bg-neutral-900 border-neutral-700' : 'bg-white border-neutral-200'} rounded-2xl p-6 border`>
+            <div className={`${isDarkMode ? 'bg-neutral-900 border-neutral-700' : 'bg-white border-neutral-200'} rounded-2xl p-6 border`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Filter className="w-5 h-5 text-neutral-400" />
@@ -9607,6 +9881,31 @@ export default function TextAnalysisApp() {
         )}
         
         {/* Heatmap Tab */}
+        {/* Sankey Diagram */}
+        {activeTab === 'sankey' && analysisResults && analysisResults.cooccurrences && (
+          <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
+            <VisualizationHeader vizKey="sankey" icon={GitBranch} extraContent={
+              <ExportVisualizationButton
+                vizId="sankey"
+                filename="sankey-coocorrencia"
+                data={analysisResults.cooccurrences.slice(0, 80).map(e => ({
+                  fonte: e.source,
+                  alvo: e.target,
+                  peso: e.weight
+                }))}
+              />
+            } />
+            <div data-viz="sankey" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-neutral-900/50' : 'bg-neutral-50'}`}>
+              <SankeyVisualization
+                cooccurrences={analysisResults.cooccurrences}
+                words={analysisResults.wordFrequency}
+                width={900}
+                height={600}
+              />
+            </div>
+          </div>
+        )}
+
         {activeTab === 'heatmap' && analysisResults && analysisResults.cooccurrences && analysisResults.wordFrequency && (
           <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
             <VisualizationHeader vizKey="heatmap" icon={Grid} extraContent={
