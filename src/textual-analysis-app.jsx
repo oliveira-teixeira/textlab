@@ -5,38 +5,38 @@ import _ from "lodash";
 // ==================== GLOBAL THEME UTILITY ====================
 // Função utilitária para gerar classes baseadas no modo escuro/claro
 const getThemeClasses = (isDarkMode) => ({
-  // Backgrounds
-  bg: isDarkMode ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-slate-100 via-white to-slate-100',
-  card: isDarkMode ? 'bg-slate-800/50' : 'bg-white',
-  cardBorder: isDarkMode ? 'border-slate-700' : 'border-slate-200',
-  cardInner: isDarkMode ? 'bg-slate-900/50' : 'bg-slate-50',
-  cardInnerBorder: isDarkMode ? 'border-slate-600' : 'border-slate-200',
-  overlay: isDarkMode ? 'bg-slate-900/30' : 'bg-slate-50',
-  vizBg: isDarkMode ? 'bg-slate-900/50' : 'bg-slate-50',
+  // Backgrounds — flat black/dark gray, no gradients
+  bg: 'bg-neutral-950',
+  card: 'bg-neutral-900',
+  cardBorder: 'border-neutral-800',
+  cardInner: 'bg-neutral-950',
+  cardInnerBorder: 'border-neutral-800',
+  overlay: 'bg-neutral-900/30',
+  vizBg: 'bg-neutral-950',
   // Text
-  text: isDarkMode ? 'text-white' : 'text-slate-900',
-  textSecondary: isDarkMode ? 'text-slate-300' : 'text-slate-700',
-  textMuted: isDarkMode ? 'text-slate-400' : 'text-slate-600',
-  textDimmed: isDarkMode ? 'text-slate-500' : 'text-slate-500',
+  text: 'text-neutral-100',
+  textSecondary: 'text-neutral-300',
+  textMuted: 'text-neutral-500',
+  textDimmed: 'text-neutral-600',
   // Interactive
-  button: isDarkMode ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-slate-200 text-slate-700 hover:bg-slate-300',
-  buttonActive: 'bg-cyan-600 text-white',
-  input: isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-300',
-  hover: isDarkMode ? 'hover:bg-slate-700' : 'hover:bg-slate-100',
-  hoverRow: isDarkMode ? 'hover:bg-slate-800/30' : 'hover:bg-slate-100',
+  button: 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700',
+  buttonActive: 'bg-neutral-100 text-neutral-950',
+  input: 'bg-neutral-900 border-neutral-700',
+  hover: 'hover:bg-neutral-800',
+  hoverRow: 'hover:bg-neutral-800/50',
   // Table
-  tableHeader: isDarkMode ? 'bg-slate-800/50' : 'bg-slate-100',
-  tableDivide: isDarkMode ? 'divide-slate-700/50' : 'divide-slate-200',
+  tableHeader: 'bg-neutral-900',
+  tableDivide: 'divide-neutral-800',
   // Misc
-  badge: isDarkMode ? 'bg-slate-700' : 'bg-slate-200',
-  divider: isDarkMode ? 'border-slate-700' : 'border-slate-200',
-  sidebar: isDarkMode ? 'bg-slate-900/95' : 'bg-white/95',
-  sidebarBorder: isDarkMode ? 'border-slate-800/50' : 'border-slate-200',
+  badge: 'bg-neutral-800',
+  divider: 'border-neutral-800',
+  sidebar: 'bg-neutral-950',
+  sidebarBorder: 'border-neutral-900',
   // Controls
-  controlBg: isDarkMode ? 'bg-slate-800/90' : 'bg-white/90 border border-slate-200',
-  controlHover: isDarkMode ? 'hover:bg-slate-700' : 'hover:bg-slate-100',
+  controlBg: 'bg-neutral-900',
+  controlHover: 'hover:bg-neutral-800',
   // Checkbox
-  checkbox: isDarkMode ? 'border-slate-600 bg-slate-700' : 'border-slate-300 bg-white',
+  checkbox: 'border-neutral-700 bg-neutral-800',
 });
 
 // ==================== UTILITY FUNCTIONS ====================
@@ -357,13 +357,13 @@ const HelpTooltip = ({ info }) => {
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
         onClick={() => setShowTooltip(!showTooltip)}
-        className="w-5 h-5 rounded-full bg-slate-700 hover:bg-cyan-600 text-slate-400 hover:text-white flex items-center justify-center text-xs font-bold transition-colors"
+        className="w-5 h-5 rounded-full bg-neutral-700 hover:bg-neutral-600 text-neutral-400 hover:text-white flex items-center justify-center text-xs font-bold transition-colors"
       >
         ?
       </button>
       {showTooltip && (
-        <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 p-3 bg-slate-900 border border-cyan-500/50 rounded-lg shadow-xl text-xs text-slate-300 leading-relaxed">
-          <div className="font-semibold text-cyan-400 mb-1">Como funciona:</div>
+        <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 p-3 bg-neutral-900 border border-neutral-500/50 rounded-lg shadow-xl text-xs text-neutral-300 leading-relaxed">
+          <div className="font-semibold text-neutral-400 mb-1">Como funciona:</div>
           {info}
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-slate-900" />
         </div>
@@ -429,7 +429,7 @@ const ZoomPanSVG = ({ children, width = 800, height = 600 }) => {
 
   return (
     <div 
-      className="relative bg-slate-900 border border-slate-700 rounded-lg overflow-hidden"
+      className="relative bg-neutral-900 border border-neutral-700 rounded-lg overflow-hidden"
       onMouseLeave={() => setIsDragging(false)}
     >
       <svg
@@ -451,21 +451,21 @@ const ZoomPanSVG = ({ children, width = 800, height = 600 }) => {
       <div className="absolute top-3 right-3 flex flex-col gap-1 z-10">
         <button
           onClick={zoomIn}
-          className="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-sm transition-colors"
+          className="px-3 py-1 bg-neutral-700 hover:bg-neutral-600 text-white rounded text-sm transition-colors"
           title="Zoom in"
         >
           +
         </button>
         <button
           onClick={zoomOut}
-          className="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-sm transition-colors"
+          className="px-3 py-1 bg-neutral-700 hover:bg-neutral-600 text-white rounded text-sm transition-colors"
           title="Zoom out"
         >
           −
         </button>
         <button
           onClick={handleReset}
-          className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded text-sm transition-colors"
+          className="px-3 py-1 bg-neutral-700 hover:bg-neutral-600 text-white rounded text-sm transition-colors"
           title="Reset zoom"
         >
           ↺
@@ -695,12 +695,12 @@ const VisualizationHeader = ({ vizKey, icon: Icon, extraContent }) => {
   return (
     <div className="mb-6">
       <div className="flex items-center gap-2 mb-2">
-        {Icon && <Icon className="w-6 h-6 text-cyan-400" />}
+        {Icon && <Icon className="w-6 h-6 text-neutral-400" />}
         <h3 className="text-xl font-semibold">{info.title}</h3>
         <HelpTooltip info={info.tooltip} />
         {extraContent}
       </div>
-      <p className="text-sm text-slate-400 max-w-3xl">{info.description}</p>
+      <p className="text-sm text-neutral-400 max-w-3xl">{info.description}</p>
     </div>
   );
 };
@@ -2908,8 +2908,8 @@ const WordCloudComponent = ({ words, width = 700, height = 500, onWordClick }) =
     return (
       <div className="flex items-center justify-center" style={{ width, height }}>
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-400">Gerando nuvem de palavras...</p>
+          <div className="w-12 h-12 border-4 border-neutral-400 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-neutral-400">Gerando nuvem de palavras...</p>
         </div>
       </div>
     );
@@ -2992,14 +2992,14 @@ const WordCloudComponent = ({ words, width = 700, height = 500, onWordClick }) =
       
       {/* Tooltip flutuante */}
       {hoveredWord && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-5 py-3 bg-slate-900/95 border border-cyan-500/40 rounded-xl shadow-2xl shadow-cyan-500/20 z-10 backdrop-blur-sm">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-5 py-3 bg-neutral-900/95 border border-neutral-500/40 rounded-xl shadow-2xl shadow-neutral-500/20 z-10 backdrop-blur-sm">
           <div className="flex items-center gap-3">
-            <span className="text-cyan-300 font-bold text-lg">{hoveredWord}</span>
-            <span className="px-2 py-1 bg-cyan-500/20 text-cyan-300 rounded-lg text-sm font-medium">
+            <span className="text-neutral-200 font-bold text-lg">{hoveredWord}</span>
+            <span className="px-2 py-1 bg-neutral-500/20 text-neutral-200 rounded-lg text-sm font-medium">
               {positionedWords.find(w => w.text === hoveredWord)?.count || 0}x
             </span>
           </div>
-          <p className="text-slate-400 text-xs mt-1">Clique para análise detalhada de incidências</p>
+          <p className="text-neutral-400 text-xs mt-1">Clique para análise detalhada de incidências</p>
         </div>
       )}
     </div>
@@ -3190,17 +3190,17 @@ const NetworkGraph = ({ cooccurrences, width = 700, height = 500, fullText, docu
 
       {/* Rich Tooltip */}
       {tooltipData && (
-        <div className="absolute bottom-4 left-4 max-w-xs px-4 py-3 bg-slate-900/95 border border-cyan-500/40 rounded-xl shadow-2xl z-20 backdrop-blur-sm">
-          <div className="text-cyan-300 font-bold text-sm">{tooltipData.word}</div>
-          <div className="text-xs text-slate-400 mt-1">
+        <div className="absolute bottom-4 left-4 max-w-xs px-4 py-3 bg-neutral-900/95 border border-neutral-500/40 rounded-xl shadow-2xl z-20 backdrop-blur-sm">
+          <div className="text-neutral-200 font-bold text-sm">{tooltipData.word}</div>
+          <div className="text-xs text-neutral-400 mt-1">
             Peso: <span className="text-white font-medium">{tooltipData.weight}</span> ·
             Conexões: <span className="text-white font-medium">{tooltipData.connections}</span>
           </div>
           {tooltipData.excerpts.length > 0 && (
-            <div className="mt-2 border-t border-slate-700 pt-2">
-              <div className="text-xs text-slate-500 mb-1">Trechos no corpus:</div>
+            <div className="mt-2 border-t border-neutral-700 pt-2">
+              <div className="text-xs text-neutral-500 mb-1">Trechos no corpus:</div>
               {tooltipData.excerpts.map((ex, i) => (
-                <div key={i} className="text-xs text-slate-300 italic leading-relaxed mb-1 truncate">
+                <div key={i} className="text-xs text-neutral-300 italic leading-relaxed mb-1 truncate">
                   "...{ex}..."
                 </div>
               ))}
@@ -3236,8 +3236,8 @@ const ClusterVisualization = ({ chdResult }) => {
               selectedCluster === cluster.id
                 ? 'border-white scale-105 shadow-lg'
                 : hoveredCluster === cluster.id
-                  ? 'border-slate-300 scale-102 shadow-md'
-                  : 'border-slate-600 hover:border-slate-400'
+                  ? 'border-neutral-300 scale-102 shadow-md'
+                  : 'border-neutral-600 hover:border-neutral-400'
             }`}
             style={{
               backgroundColor: cluster.color + (selectedCluster === cluster.id || hoveredCluster === cluster.id ? '40' : '20'),
@@ -3248,10 +3248,10 @@ const ClusterVisualization = ({ chdResult }) => {
             <div className="text-2xl font-bold mb-1" style={{ color: cluster.color }}>
               {cluster.segments?.length || 0}
             </div>
-            <div className={`text-xs text-slate-400`}>
+            <div className={`text-xs text-neutral-400`}>
               Classe {cluster.id + 1}
             </div>
-            <div className="text-xs text-slate-500 mt-2 truncate">
+            <div className="text-xs text-neutral-500 mt-2 truncate">
               {cluster.topWords.slice(0, 3).map(w => w.word).join(', ')}
             </div>
           </button>
@@ -3259,7 +3259,7 @@ const ClusterVisualization = ({ chdResult }) => {
       </div>
       
       {selectedCluster !== null && clusters[selectedCluster] && (
-        <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-600">
+        <div className="bg-neutral-800/50 rounded-xl p-6 border border-neutral-600">
           <h4 className="text-lg font-semibold mb-4" style={{ color: clusters[selectedCluster].color }}>
             Classe {selectedCluster + 1} - Palavras Características
           </h4>
@@ -3277,12 +3277,12 @@ const ClusterVisualization = ({ chdResult }) => {
               </span>
             ))}
           </div>
-          <h5 className="text-sm font-medium text-slate-400 mb-3">
+          <h5 className="text-sm font-medium text-neutral-400 mb-3">
             Segmentos representativos ({clusters[selectedCluster].segments.length} total)
           </h5>
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {clusters[selectedCluster].segments.slice(0, 5).map((seg, idx) => (
-              <div key={idx} className="text-sm text-slate-300 p-3 bg-slate-700/30 rounded-lg">
+              <div key={idx} className="text-sm text-neutral-300 p-3 bg-neutral-700/30 rounded-lg">
                 "{seg.text.slice(0, 200)}..."
               </div>
             ))}
@@ -3299,9 +3299,9 @@ const StatisticsPanel = ({ stats }) => {
   const statItems = stats.groupingEnabled ? [
     { label: 'Documentos', value: stats.documentCount, icon: FileText },
     { label: 'Palavras Totais', value: stats.totalWords.toLocaleString(), icon: Hash },
-    { label: 'Formas Únicas (raw)', value: (stats.uniqueWordsRaw || stats.uniqueWords).toLocaleString(), icon: Activity, color: 'text-slate-400' },
+    { label: 'Formas Únicas (raw)', value: (stats.uniqueWordsRaw || stats.uniqueWords).toLocaleString(), icon: Activity, color: 'text-neutral-400' },
     { label: 'Lemas (agrupados)', value: stats.uniqueWords.toLocaleString(), icon: Layers, color: 'text-purple-400' },
-    { label: 'Grupos c/ Variações', value: (stats.groupedWords || 0).toLocaleString(), icon: GitBranch, color: 'text-cyan-400' },
+    { label: 'Grupos c/ Variações', value: (stats.groupedWords || 0).toLocaleString(), icon: GitBranch, color: 'text-neutral-400' },
     { label: 'Riqueza Léxica', value: `${stats.lexicalRichness}%`, icon: TrendingUp },
   ] : [
     { label: 'Documentos', value: stats.documentCount, icon: FileText },
@@ -3318,11 +3318,11 @@ const StatisticsPanel = ({ stats }) => {
         {statItems.map((item, idx) => (
           <div
             key={idx}
-            className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 border border-slate-700 hover:border-slate-500 transition-all duration-300"
+            className="bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-xl p-4 border border-neutral-700 hover:border-neutral-500 transition-all duration-300"
           >
-            <item.icon className={`w-5 h-5 ${item.color || 'text-cyan-400'} mb-2`} />
+            <item.icon className={`w-5 h-5 ${item.color || 'text-neutral-400'} mb-2`} />
             <div className="text-2xl font-bold text-white mb-1">{item.value}</div>
-            <div className={`text-xs text-slate-400`}>{item.label}</div>
+            <div className={`text-xs text-neutral-400`}>{item.label}</div>
           </div>
         ))}
       </div>
@@ -3334,7 +3334,7 @@ const StatisticsPanel = ({ stats }) => {
             <Layers className="w-5 h-5 text-purple-400 mt-0.5" />
             <div>
               <h4 className="text-sm font-medium text-purple-300">Agrupamento Morfológico Ativo</h4>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-neutral-400 mt-1">
                 Variações de gênero (ministro/ministra), número (singular/plural), linguagem neutra (x, @) e possíveis typos 
                 são automaticamente agrupados na mesma contagem. Clique em qualquer palavra na nuvem para ver todas as variações.
               </p>
@@ -3342,12 +3342,12 @@ const StatisticsPanel = ({ stats }) => {
           </div>
         </div>
       ) : (
-        <div className="bg-slate-800/50 border border-slate-600 rounded-xl p-4">
+        <div className="bg-neutral-800/50 border border-neutral-600 rounded-xl p-4">
           <div className="flex items-start gap-3">
-            <Activity className="w-5 h-5 text-slate-400 mt-0.5" />
+            <Activity className="w-5 h-5 text-neutral-400 mt-0.5" />
             <div>
-              <h4 className="text-sm font-medium text-slate-300">Modo Simples (sem agrupamento)</h4>
-              <p className="text-xs text-slate-400 mt-1">
+              <h4 className="text-sm font-medium text-neutral-300">Modo Simples (sem agrupamento)</h4>
+              <p className="text-xs text-neutral-400 mt-1">
                 Cada forma de palavra é contada separadamente. Ative "Agrupar variações morfológicas" nas opções 
                 para combinar automaticamente variações de gênero, número e typos.
               </p>
@@ -3409,15 +3409,15 @@ const HeatmapVisualization = ({ cooccurrences, words, width = 700, height = 500 
     return (
       <div className="flex items-center justify-center" style={{ width, height }}>
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-400">Gerando heatmap...</p>
+          <div className="w-12 h-12 border-4 border-neutral-400 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-neutral-400">Gerando heatmap...</p>
         </div>
       </div>
     );
   }
   
   if (!heatmapData.matrix || heatmapData.matrix.length === 0) {
-    return <div className="text-slate-400 text-center p-8">Dados insuficientes para heatmap</div>;
+    return <div className="text-neutral-400 text-center p-8">Dados insuficientes para heatmap</div>;
   }
   
   const cellSize = Math.min((width - 120) / heatmapData.words.length, (height - 80) / heatmapData.words.length);
@@ -3500,13 +3500,13 @@ const HeatmapVisualization = ({ cooccurrences, words, width = 700, height = 500 
 
       {/* Tooltip */}
       {hoveredCell !== null && heatmapData.matrix[hoveredCell] && (
-        <div className="absolute top-4 right-4 px-4 py-2 bg-slate-900/95 border border-cyan-500/40 rounded-lg shadow-xl z-10">
+        <div className="absolute top-4 right-4 px-4 py-2 bg-neutral-900/95 border border-neutral-500/40 rounded-lg shadow-xl z-10">
           <div className="text-sm">
-            <span className="text-cyan-300 font-medium">{heatmapData.matrix[hoveredCell].word1}</span>
-            <span className="text-slate-400 mx-2">↔</span>
-            <span className="text-cyan-300 font-medium">{heatmapData.matrix[hoveredCell].word2}</span>
+            <span className="text-neutral-200 font-medium">{heatmapData.matrix[hoveredCell].word1}</span>
+            <span className="text-neutral-400 mx-2">↔</span>
+            <span className="text-neutral-200 font-medium">{heatmapData.matrix[hoveredCell].word2}</span>
           </div>
-          <div className="text-xs text-slate-400 mt-1">
+          <div className="text-xs text-neutral-400 mt-1">
             Coocorrências: <span className="text-white font-medium">{heatmapData.matrix[hoveredCell].value}</span>
           </div>
         </div>
@@ -3578,7 +3578,7 @@ const TreemapVisualization = ({ words, width = 700, height = 500, onWordClick })
       <div className="flex items-center justify-center" style={{ width, height }}>
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-400">Gerando treemap...</p>
+          <p className="text-neutral-400">Gerando treemap...</p>
         </div>
       </div>
     );
@@ -3666,12 +3666,12 @@ const TreemapVisualization = ({ words, width = 700, height = 500, onWordClick })
 
       {/* Tooltip */}
       {hoveredRect !== null && treemapData[hoveredRect] && (
-        <div className="absolute top-4 right-4 px-4 py-2 bg-slate-900/95 border border-purple-500/40 rounded-lg shadow-xl z-10">
-          <div className="text-cyan-300 font-bold">{treemapData[hoveredRect].data.name}</div>
-          <div className={`text-sm text-slate-400`}>
+        <div className="absolute top-4 right-4 px-4 py-2 bg-neutral-900/95 border border-purple-500/40 rounded-lg shadow-xl z-10">
+          <div className="text-neutral-200 font-bold">{treemapData[hoveredRect].data.name}</div>
+          <div className={`text-sm text-neutral-400`}>
             Frequência: <span className="text-white font-medium">{treemapData[hoveredRect].value}</span>
           </div>
-          <div className="text-xs text-slate-500 mt-1">Clique para análise</div>
+          <div className="text-xs text-neutral-500 mt-1">Clique para análise</div>
         </div>
       )}
     </div>
@@ -3729,7 +3729,7 @@ const RadarVisualization = ({ codedSegments, codebook, width = 500, height = 500
   
   if (!radarData || radarData.length < 3) {
     return (
-      <div className="flex items-center justify-center text-slate-400" style={{ width, height }}>
+      <div className="flex items-center justify-center text-neutral-400" style={{ width, height }}>
         <div className="text-center">
           <p>Codifique pelo menos 3 categorias diferentes</p>
           <p className="text-sm mt-2">para visualizar o radar</p>
@@ -3949,7 +3949,7 @@ const SunburstVisualization = ({ codedSegments, codebook, width = 500, height = 
       <div className="flex items-center justify-center" style={{ width, height }}>
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-400">Gerando sunburst...</p>
+          <p className="text-neutral-400">Gerando sunburst...</p>
         </div>
       </div>
     );
@@ -3957,7 +3957,7 @@ const SunburstVisualization = ({ codedSegments, codebook, width = 500, height = 
   
   if (!sunburstData || sunburstData.length <= 1) {
     return (
-      <div className="flex items-center justify-center text-slate-400" style={{ width, height }}>
+      <div className="flex items-center justify-center text-neutral-400" style={{ width, height }}>
         <div className="text-center">
           <p>Codifique alguns segmentos</p>
           <p className="text-sm mt-2">para visualizar a hierarquia</p>
@@ -4035,13 +4035,13 @@ const SunburstVisualization = ({ codedSegments, codebook, width = 500, height = 
       
       {/* Tooltip */}
       {hoveredArc !== null && sunburstData[hoveredArc] && (
-        <div className="absolute top-4 right-4 px-4 py-2 bg-slate-900/95 border border-amber-500/40 rounded-lg shadow-xl z-10">
+        <div className="absolute top-4 right-4 px-4 py-2 bg-neutral-900/95 border border-amber-500/40 rounded-lg shadow-xl z-10">
           <div className="text-amber-300 font-bold">{sunburstData[hoveredArc].data.name}</div>
-          <div className={`text-sm text-slate-400`}>
+          <div className={`text-sm text-neutral-400`}>
             Segmentos: <span className="text-white font-medium">{Math.floor(sunburstData[hoveredArc].value)}</span>
           </div>
           {sunburstData[hoveredArc].depth > 1 && sunburstData[hoveredArc].parent && (
-            <div className="text-xs text-slate-500 mt-1">
+            <div className="text-xs text-neutral-500 mt-1">
               Categoria: {sunburstData[hoveredArc].parent.data.name}
             </div>
           )}
@@ -4079,7 +4079,7 @@ const CentralityMetricsPanel = ({ networkAnalysis, onNodeClick, isDarkMode = tru
       {/* Métricas Globais */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className={`${t.cardInner} rounded-xl p-4 border ${t.cardInnerBorder}`}>
-          <div className="text-3xl font-bold text-cyan-400">{metrics.nodeCount}</div>
+          <div className="text-3xl font-bold text-neutral-400">{metrics.nodeCount}</div>
           <div className={`text-sm ${t.textMuted}`}>Nós</div>
         </div>
         <div className={`${t.cardInner} rounded-xl p-4 border ${t.cardInnerBorder}`}>
@@ -4110,7 +4110,7 @@ const CentralityMetricsPanel = ({ networkAnalysis, onNodeClick, isDarkMode = tru
             onClick={() => setSortBy(opt.key)}
             className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
               sortBy === opt.key 
-                ? 'bg-cyan-600 text-white' 
+                ? 'bg-neutral-100 text-neutral-950' 
                 : t.button
             }`}
             title={opt.desc}
@@ -4145,7 +4145,7 @@ const CentralityMetricsPanel = ({ networkAnalysis, onNodeClick, isDarkMode = tru
                   <td className={`px-4 py-2 ${t.textDimmed}`}>{idx + 1}</td>
                   <td className={`px-4 py-2 font-medium ${t.text}`}>{node.id}</td>
                   <td className="px-4 py-2 text-right">
-                    <span className="text-cyan-400">{node.degree}</span>
+                    <span className="text-neutral-400">{node.degree}</span>
                     <span className={`${t.textDimmed} text-xs ml-1`}>({(node.degreeCentrality * 100).toFixed(1)}%)</span>
                   </td>
                   <td className="px-4 py-2 text-right text-purple-400">{(node.betweennessCentrality * 100).toFixed(2)}%</td>
@@ -4168,7 +4168,7 @@ const CentralityMetricsPanel = ({ networkAnalysis, onNodeClick, isDarkMode = tru
           <div className={`p-3 border-t ${t.divider} text-center`}>
             <button
               onClick={() => setShowCount(prev => prev + 20)}
-              className="text-sm text-cyan-400 hover:text-cyan-300"
+              className="text-sm text-neutral-400 hover:text-neutral-200"
             >
               Mostrar mais ({nodes.length - showCount} restantes)
             </button>
@@ -4197,7 +4197,7 @@ const CommunitiesPanel = ({ networkAnalysis, isDarkMode = true }) => {
           <div className="text-3xl font-bold text-purple-400">{communityCount}</div>
           <div className={`text-sm ${t.textMuted}`}>Comunidades Detectadas</div>
         </div>
-        <div className={`${isDarkMode ? 'bg-gradient-to-br from-indigo-900/30 to-blue-900/30' : 'bg-gradient-to-br from-indigo-100 to-blue-100'} rounded-xl p-4 border ${isDarkMode ? 'border-indigo-500/30' : 'border-indigo-300'}`}>
+        <div className={`${isDarkMode ? 'bg-neutral-800' : 'bg-gradient-to-br from-indigo-100 to-blue-100'} rounded-xl p-4 border ${isDarkMode ? 'border-indigo-500/30' : 'border-indigo-300'}`}>
           <div className="text-3xl font-bold text-indigo-400">{modularity}</div>
           <div className={`text-sm ${t.textMuted}`}>Modularidade (Q)</div>
           <div className={`text-xs ${t.textDimmed} mt-1`}>
@@ -4240,7 +4240,7 @@ const CommunitiesPanel = ({ networkAnalysis, isDarkMode = true }) => {
             </button>
             
             {expandedCommunity === comm.id && (
-              <div className={`p-4 border-t ${t.divider} ${isDarkMode ? 'bg-slate-800/30' : 'bg-slate-100'}`}>
+              <div className={`p-4 border-t ${t.divider} ${isDarkMode ? 'bg-neutral-800/30' : 'bg-neutral-100'}`}>
                 <div className="flex flex-wrap gap-2">
                   {comm.members.map(member => (
                     <span 
@@ -4326,7 +4326,7 @@ const AssociationsPanel = ({ statisticalAnalysis, isDarkMode = true }) => {
               {sortedAssociations.slice(0, 50).map((assoc, idx) => (
                 <tr key={idx} className={t.hoverRow}>
                   <td className="px-3 py-2">
-                    <span className="text-cyan-400">{assoc.source}</span>
+                    <span className="text-neutral-400">{assoc.source}</span>
                     <span className={`${t.textDimmed} mx-1`}>↔</span>
                     <span className="text-purple-400">{assoc.target}</span>
                   </td>
@@ -4370,14 +4370,14 @@ const LexicalDiversityPanel = ({ statisticalAnalysis, isDarkMode = true }) => {
   ];
   
   const colorClasses = isDarkMode ? {
-    cyan: 'text-cyan-400 border-cyan-500/30 bg-cyan-900/20',
+    cyan: 'text-neutral-400 border-neutral-500/30 bg-neutral-800/20',
     purple: 'text-purple-400 border-purple-500/30 bg-purple-900/20',
     blue: 'text-blue-400 border-blue-500/30 bg-blue-900/20',
     green: 'text-green-400 border-green-500/30 bg-green-900/20',
     amber: 'text-amber-400 border-amber-500/30 bg-amber-900/20',
     rose: 'text-rose-400 border-rose-500/30 bg-rose-900/20'
   } : {
-    cyan: 'text-cyan-600 border-cyan-300 bg-cyan-50',
+    cyan: 'text-neutral-600 border-neutral-300 bg-neutral-50',
     purple: 'text-purple-600 border-purple-300 bg-purple-50',
     blue: 'text-blue-600 border-blue-300 bg-blue-50',
     green: 'text-green-600 border-green-300 bg-green-50',
@@ -4394,7 +4394,7 @@ const LexicalDiversityPanel = ({ statisticalAnalysis, isDarkMode = true }) => {
           <div className={`text-sm ${t.textMuted}`}>Total de Tokens</div>
         </div>
         <div className={`${t.cardInner} rounded-xl p-4 border ${t.cardInnerBorder}`}>
-          <div className="text-2xl font-bold text-cyan-400">{ld.uniqueWords.toLocaleString()}</div>
+          <div className="text-2xl font-bold text-neutral-400">{ld.uniqueWords.toLocaleString()}</div>
           <div className={`text-sm ${t.textMuted}`}>Palavras Únicas</div>
         </div>
         <div className={`${t.cardInner} rounded-xl p-4 border ${t.cardInnerBorder}`}>
@@ -4418,7 +4418,7 @@ const LexicalDiversityPanel = ({ statisticalAnalysis, isDarkMode = true }) => {
       </div>
       
       {/* Interpretação */}
-      <div className={`${isDarkMode ? 'bg-slate-800/30' : 'bg-slate-100'} rounded-xl p-4 border ${t.divider}`}>
+      <div className={`${isDarkMode ? 'bg-neutral-800/30' : 'bg-neutral-100'} rounded-xl p-4 border ${t.divider}`}>
         <h4 className={`font-medium mb-2 ${t.textSecondary}`}>Interpretação</h4>
         <div className={`text-sm ${t.textMuted} space-y-2`}>
           <p>
@@ -4455,7 +4455,7 @@ const TFIDFPanel = ({ statisticalAnalysis, isDarkMode = true }) => {
       {/* TF-IDF Global */}
       <div>
         <h4 className="font-medium mb-3 flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-cyan-400" />
+          <TrendingUp className="w-4 h-4 text-neutral-400" />
           Termos mais Discriminantes (TF-IDF Global)
         </h4>
         <div className={`${t.cardInner} rounded-xl p-4 border ${t.cardInnerBorder}`}>
@@ -4505,7 +4505,7 @@ const TFIDFPanel = ({ statisticalAnalysis, isDarkMode = true }) => {
               </button>
               
               {selectedDoc === doc.docId && (
-                <div className={`p-3 border-t ${t.divider} ${isDarkMode ? 'bg-slate-800/30' : 'bg-slate-100'}`}>
+                <div className={`p-3 border-t ${t.divider} ${isDarkMode ? 'bg-neutral-800/30' : 'bg-neutral-100'}`}>
                   <div className="overflow-x-auto">
                     <table className="w-full text-xs">
                       <thead>
@@ -4519,7 +4519,7 @@ const TFIDFPanel = ({ statisticalAnalysis, isDarkMode = true }) => {
                       <tbody className={`divide-y ${t.tableDivide}`}>
                         {doc.topTerms.slice(0, 15).map(term => (
                           <tr key={term.word}>
-                            <td className="px-2 py-1 text-cyan-400">{term.word}</td>
+                            <td className="px-2 py-1 text-neutral-400">{term.word}</td>
                             <td className={`px-2 py-1 text-right ${t.textMuted}`}>{term.tf.toFixed(4)}</td>
                             <td className="px-2 py-1 text-right text-purple-400">{term.idf.toFixed(2)}</td>
                             <td className={`px-2 py-1 text-right font-medium ${t.text}`}>{term.tfidf.toFixed(4)}</td>
@@ -4542,7 +4542,7 @@ const TFIDFPanel = ({ statisticalAnalysis, isDarkMode = true }) => {
 const SpecificitiesPanel = ({ statisticalAnalysis }) => {
   if (!statisticalAnalysis?.specificities || statisticalAnalysis.specificities.length < 2) {
     return (
-      <div className="text-center py-8 text-slate-400">
+      <div className="text-center py-8 text-neutral-400">
         <p>Análise de especificidades requer pelo menos 2 corpus com documentos.</p>
         <p className="text-sm mt-2">Crie múltiplos corpus na aba Importar para comparar.</p>
       </div>
@@ -4553,17 +4553,17 @@ const SpecificitiesPanel = ({ statisticalAnalysis }) => {
   
   return (
     <div className="space-y-6">
-      <p className={`text-sm text-slate-400`}>
+      <p className={`text-sm text-neutral-400`}>
         Especificidades mostram palavras que são significativamente mais ou menos frequentes em cada corpus comparado ao esperado.
       </p>
       
       {specificities.map(corpus => (
         <div 
           key={corpus.corpusId}
-          className="bg-slate-900/50 rounded-xl border border-slate-700 overflow-hidden"
+          className="bg-neutral-900/50 rounded-xl border border-neutral-700 overflow-hidden"
         >
           <div 
-            className="p-4 border-b border-slate-700 flex items-center gap-3"
+            className="p-4 border-b border-neutral-700 flex items-center gap-3"
             style={{ borderLeftWidth: '4px', borderLeftColor: corpus.corpusColor }}
           >
             <span 
@@ -4571,10 +4571,10 @@ const SpecificitiesPanel = ({ statisticalAnalysis }) => {
               style={{ backgroundColor: corpus.corpusColor }}
             />
             <span className="font-medium">{corpus.corpusName}</span>
-            <span className={`text-sm text-slate-400`}>({corpus.totalWords.toLocaleString()} palavras)</span>
+            <span className={`text-sm text-neutral-400`}>({corpus.totalWords.toLocaleString()} palavras)</span>
           </div>
           
-          <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-700">
+          <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-neutral-700">
             {/* Termos Específicos (positivos) */}
             <div className="p-4">
               <h5 className="text-sm font-medium text-green-400 mb-3">
@@ -4585,7 +4585,7 @@ const SpecificitiesPanel = ({ statisticalAnalysis }) => {
                   <div key={term.word} className="flex items-center justify-between text-sm">
                     <span className="text-white">{term.word}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-400">{term.observed}x</span>
+                      <span className="text-neutral-400">{term.observed}x</span>
                       <span className="text-green-400 text-xs">+{term.ratio}x</span>
                     </div>
                   </div>
@@ -4603,7 +4603,7 @@ const SpecificitiesPanel = ({ statisticalAnalysis }) => {
                   <div key={term.word} className="flex items-center justify-between text-sm">
                     <span className="text-white">{term.word}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-400">{term.observed}x</span>
+                      <span className="text-neutral-400">{term.observed}x</span>
                       <span className="text-rose-400 text-xs">{term.ratio}x</span>
                     </div>
                   </div>
@@ -4624,7 +4624,7 @@ const WordTreeVisualization = ({ wordTree, width = 900, height = 500, onRemoveWo
   const [tooltip, setTooltip] = useState(null);
 
   if (!wordTree || !wordTree.center) {
-    return <div className="text-slate-400 text-center py-8">Digite uma palavra para visualizar a árvore</div>;
+    return <div className="text-neutral-400 text-center py-8">Digite uma palavra para visualizar a árvore</div>;
   }
 
   const { center, left = [], right = [] } = wordTree;
@@ -4837,7 +4837,7 @@ const WordTreeVisualization = ({ wordTree, width = 900, height = 500, onRemoveWo
           <div className="font-bold" style={{ color: tooltip.side === 'left' ? '#22d3ee' : '#a78bfa' }}>
             {tooltip.text}
           </div>
-          <div className="text-slate-400 mt-1">{tooltip.count} ocorrências</div>
+          <div className="text-neutral-400 mt-1">{tooltip.count} ocorrências</div>
         </div>
       )}
     </div>
@@ -4889,7 +4889,7 @@ const BigramNetworkVisualization = ({ bigramNetwork, width = 800, height = 600 }
   }, [bigramNetwork, width, height]);
 
   if (!bigramNetwork?.nodes?.length) {
-    return <div className="text-slate-400 text-center py-8">Nenhum bigrama encontrado com frequência suficiente</div>;
+    return <div className="text-neutral-400 text-center py-8">Nenhum bigrama encontrado com frequência suficiente</div>;
   }
 
   const { edges } = bigramNetwork;
@@ -4980,13 +4980,13 @@ const BigramNetworkVisualization = ({ bigramNetwork, width = 800, height = 600 }
 
       {/* Tooltip */}
       {hoveredNode && (
-        <div className="absolute bottom-4 left-4 px-4 py-2 bg-slate-900/95 border border-cyan-500/40 rounded-xl shadow-2xl z-20 backdrop-blur-sm">
-          <div className="text-cyan-300 font-bold text-sm">{hoveredNode}</div>
-          <div className="text-xs text-slate-400 mt-1">
+        <div className="absolute bottom-4 left-4 px-4 py-2 bg-neutral-900/95 border border-neutral-500/40 rounded-xl shadow-2xl z-20 backdrop-blur-sm">
+          <div className="text-neutral-200 font-bold text-sm">{hoveredNode}</div>
+          <div className="text-xs text-neutral-400 mt-1">
             Peso: <span className="text-white">{positions.find(p => p.id === hoveredNode)?.weight}</span> ·
             Grau: <span className="text-white">{positions.find(p => p.id === hoveredNode)?.degree}</span>
           </div>
-          <div className="text-xs text-slate-500 mt-1">
+          <div className="text-xs text-neutral-500 mt-1">
             Conectado a: {[...connectedNodes].slice(0, 5).join(', ')}{connectedNodes.size > 5 ? '...' : ''}
           </div>
         </div>
@@ -5073,7 +5073,7 @@ const TermsBerryVisualization = ({ words, width = 700, height = 700, onWordClick
       <div className="flex items-center justify-center" style={{ width, height }}>
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-400">Gerando TermsBerry...</p>
+          <p className="text-neutral-400">Gerando TermsBerry...</p>
         </div>
       </div>
     );
@@ -5081,7 +5081,7 @@ const TermsBerryVisualization = ({ words, width = 700, height = 700, onWordClick
   
   if (packedCircles.length === 0) {
     return (
-      <div className="flex items-center justify-center text-slate-400" style={{ width, height }}>
+      <div className="flex items-center justify-center text-neutral-400" style={{ width, height }}>
         Nenhum dado para exibir
       </div>
     );
@@ -5091,7 +5091,7 @@ const TermsBerryVisualization = ({ words, width = 700, height = 700, onWordClick
 
   return (
     <ZoomPanSVG width={width} height={height}>
-      <svg width={width} height={height} className="bg-slate-900/30 rounded-xl">
+      <svg width={width} height={height} className="bg-neutral-900/30 rounded-xl">
         <defs>
           <filter id="glowTermsBerry">
             <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
@@ -5150,9 +5150,9 @@ const TermsBerryVisualization = ({ words, width = 700, height = 700, onWordClick
 
       {/* Tooltip */}
       {hoveredWord && (
-        <div className="absolute top-4 right-4 px-4 py-2 bg-slate-900/95 border border-cyan-500/40 rounded-lg shadow-xl z-10">
-          <div className="text-cyan-300 font-bold">{hoveredWord}</div>
-          <div className={`text-sm text-slate-400`}>
+        <div className="absolute top-4 right-4 px-4 py-2 bg-neutral-900/95 border border-neutral-500/40 rounded-lg shadow-xl z-10">
+          <div className="text-neutral-200 font-bold">{hoveredWord}</div>
+          <div className={`text-sm text-neutral-400`}>
             Frequência: <span className="text-white font-medium">
               {packedCircles.find(c => c.word === hoveredWord)?.count}
             </span>
@@ -5251,7 +5251,7 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
 
   if (!afcData || !afcData.words || afcData.words.length === 0) {
     return (
-      <div className="flex items-center justify-center text-slate-400" style={{ width, height }}>
+      <div className="flex items-center justify-center text-neutral-400" style={{ width, height }}>
         <div className="text-center">
           <p>Dados insuficientes para AFC</p>
           <p className="text-sm mt-2">Necessário pelo menos 2 documentos</p>
@@ -5333,7 +5333,7 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
 
   return (
     <ZoomPanSVG width={width} height={height}>
-      <svg width={width} height={height} className="bg-slate-900/30 rounded-xl">
+      <svg width={width} height={height} className="bg-neutral-900/30 rounded-xl">
         <defs>
           <filter id="glowAFC">
             <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
@@ -5510,8 +5510,8 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
       </svg>
 
       {/* Checkbox Mostrar rótulos */}
-      <div className="absolute top-3 right-3 z-10 bg-slate-800/90 px-3 py-1.5 rounded-lg">
-        <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+      <div className="absolute top-3 right-3 z-10 bg-neutral-800/90 px-3 py-1.5 rounded-lg">
+        <label className="flex items-center gap-2 text-sm text-neutral-300 cursor-pointer">
           <input
             type="checkbox"
             checked={showLabels}
@@ -5527,18 +5527,18 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
         const w = words.find(w => w.word === hoveredWord);
         if (!w) return null;
         return (
-          <div className="absolute bottom-4 left-4 px-4 py-3 bg-slate-900/95 border border-cyan-500/40 rounded-lg shadow-xl z-10 min-w-[180px]">
+          <div className="absolute bottom-4 left-4 px-4 py-3 bg-neutral-900/95 border border-neutral-500/40 rounded-lg shadow-xl z-10 min-w-[180px]">
             <div className="flex items-center gap-2 mb-1">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: getColor(w.x, w.y) }} />
               <span className="text-white font-bold text-base">{w.word}</span>
             </div>
-            <div className="text-sm text-slate-400">
+            <div className="text-sm text-neutral-400">
               Frequência: <span className="text-white font-medium">{w.count}</span>
             </div>
-            <div className="text-xs text-slate-500 mt-1">
-              Fator 1: <span className="text-cyan-300 font-mono">{w.x.toFixed(3)}</span> · Fator 2: <span className="text-cyan-300 font-mono">{w.y.toFixed(3)}</span>
+            <div className="text-xs text-neutral-500 mt-1">
+              Fator 1: <span className="text-neutral-200 font-mono">{w.x.toFixed(3)}</span> · Fator 2: <span className="text-neutral-200 font-mono">{w.y.toFixed(3)}</span>
             </div>
-            <div className="text-xs text-slate-600 mt-1">
+            <div className="text-xs text-neutral-600 mt-1">
               Quadrante {w.x > 0 ? (w.y > 0 ? '1 ↗' : '4 ↘') : (w.y > 0 ? '2 ↖' : '3 ↙')}
             </div>
           </div>
@@ -5571,7 +5571,7 @@ const SentimentVisualization = ({ sentiment, width = 700, height = 400 }) => {
     <div className="space-y-6">
       {/* Gráfico de barras */}
       <ZoomPanSVG width={width} height={height}>
-        <svg width={width} height={height} className="bg-slate-900/30 rounded-xl">
+        <svg width={width} height={height} className="bg-neutral-900/30 rounded-xl">
           <defs>
             <filter id="glowSentiment">
               <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
@@ -5691,15 +5691,15 @@ const SentimentVisualization = ({ sentiment, width = 700, height = 400 }) => {
             ? 'bg-green-900/20 border-green-500/30' 
             : parseFloat(score) < 0 
               ? 'bg-red-900/20 border-red-500/30'
-              : 'bg-slate-800/50 border-slate-700'
+              : 'bg-neutral-800/50 border-neutral-700'
         }`}>
           <div className={`text-3xl font-bold ${
-            parseFloat(score) > 0 ? 'text-green-400' : parseFloat(score) < 0 ? 'text-red-400' : 'text-slate-400'
+            parseFloat(score) > 0 ? 'text-green-400' : parseFloat(score) < 0 ? 'text-red-400' : 'text-neutral-400'
           }`}>
             {parseFloat(score) > 0 ? '+' : ''}{score}
           </div>
-          <div className={`text-sm text-slate-400`}>Score de Sentimento</div>
-          <div className="text-xs text-slate-500 mt-1">
+          <div className={`text-sm text-neutral-400`}>Score de Sentimento</div>
+          <div className="text-xs text-neutral-500 mt-1">
             {parseFloat(score) > 10 ? 'Predominantemente positivo' :
              parseFloat(score) < -10 ? 'Predominantemente negativo' :
              'Relativamente neutro'}
@@ -5954,7 +5954,7 @@ const ExportVisualizationButton = ({ vizId, filename, data }) => {
       <button
         onClick={() => setShowMenu(!showMenu)}
         disabled={isExporting}
-        className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm transition-colors flex items-center gap-2"
+        className="px-3 py-1.5 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-sm transition-colors flex items-center gap-2"
       >
         {isExporting ? (
           <Loader2 className="w-4 h-4 animate-spin" />
@@ -5965,23 +5965,23 @@ const ExportVisualizationButton = ({ vizId, filename, data }) => {
       </button>
       
       {showMenu && (
-        <div className="absolute right-0 top-full mt-1 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 overflow-hidden min-w-36">
-          <button onClick={exportAsPNG} className="w-full px-4 py-2 text-left text-sm hover:bg-slate-700 flex items-center gap-2">
-            <span className="text-cyan-400">PNG</span> Imagem
+        <div className="absolute right-0 top-full mt-1 bg-neutral-800 border border-neutral-700 rounded-lg shadow-xl z-50 overflow-hidden min-w-36">
+          <button onClick={exportAsPNG} className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-700 flex items-center gap-2">
+            <span className="text-neutral-400">PNG</span> Imagem
           </button>
-          <button onClick={exportAsJPG} className="w-full px-4 py-2 text-left text-sm hover:bg-slate-700 flex items-center gap-2">
+          <button onClick={exportAsJPG} className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-700 flex items-center gap-2">
             <span className="text-purple-400">JPG</span> Imagem
           </button>
-          <button onClick={exportAsSVG} className="w-full px-4 py-2 text-left text-sm hover:bg-slate-700 flex items-center gap-2">
+          <button onClick={exportAsSVG} className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-700 flex items-center gap-2">
             <span className="text-green-400">SVG</span> Vetor
           </button>
           {data && (
             <>
-              <div className="border-t border-slate-700" />
-              <button onClick={exportAsCSV} className="w-full px-4 py-2 text-left text-sm hover:bg-slate-700 flex items-center gap-2">
+              <div className="border-t border-neutral-700" />
+              <button onClick={exportAsCSV} className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-700 flex items-center gap-2">
                 <span className="text-amber-400">CSV</span> Dados
               </button>
-              <button onClick={exportAsXLSX} className="w-full px-4 py-2 text-left text-sm hover:bg-slate-700 flex items-center gap-2">
+              <button onClick={exportAsXLSX} className="w-full px-4 py-2 text-left text-sm hover:bg-neutral-700 flex items-center gap-2">
                 <span className="text-blue-400">XLSX</span> Excel
               </button>
             </>
@@ -6104,7 +6104,7 @@ const HighlightedTextViewer = ({
   
   return (
     <div 
-      className="prose prose-invert max-w-none text-slate-300 leading-relaxed whitespace-pre-wrap select-text"
+      className="prose prose-invert max-w-none text-neutral-300 leading-relaxed whitespace-pre-wrap select-text"
       onMouseUp={(e) => onTextSelect && onTextSelect(e, document.id, document.name)}
     >
       {renderHighlightedText()}
@@ -6150,13 +6150,13 @@ const CodeSelectionTooltip = ({
       
       {/* Modal centralizado */}
       <div 
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-cyan-500 rounded-2xl shadow-2xl p-5 w-[360px] max-h-[90vh] flex flex-col"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral-900 border-2 border-neutral-500 rounded-2xl shadow-2xl p-5 w-[360px] max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-700">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-neutral-700">
           <div className="flex items-center gap-2">
-            <Tag className="w-5 h-5 text-cyan-400" />
+            <Tag className="w-5 h-5 text-neutral-400" />
             <span className="text-lg font-semibold text-white">Codificar Seleção</span>
           </div>
           <button 
@@ -6169,22 +6169,22 @@ const CodeSelectionTooltip = ({
         </div>
         
         {/* Texto selecionado */}
-        <div className="mb-4 p-4 bg-slate-800/80 rounded-xl border border-slate-600">
-          <p className="text-xs text-slate-400 mb-2 uppercase tracking-wide font-medium">Texto selecionado:</p>
-          <p className="text-sm text-cyan-300 leading-relaxed max-h-24 overflow-y-auto">
+        <div className="mb-4 p-4 bg-neutral-800/80 rounded-xl border border-neutral-600">
+          <p className="text-xs text-neutral-400 mb-2 uppercase tracking-wide font-medium">Texto selecionado:</p>
+          <p className="text-sm text-neutral-200 leading-relaxed max-h-24 overflow-y-auto">
             "{selectedText?.substring(0, 200)}{selectedText?.length > 200 ? '...' : ''}"
           </p>
         </div>
         
         {/* Busca */}
         <div className="relative mb-4">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Buscar código..."
-            className="w-full pl-12 pr-4 py-3 bg-slate-800 border-2 border-slate-600 rounded-xl text-base focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 text-white placeholder-slate-500"
+            className="w-full pl-12 pr-4 py-3 bg-neutral-800 border-2 border-neutral-600 rounded-xl text-base focus:outline-none focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20 text-white placeholder-slate-500"
             autoFocus
           />
         </div>
@@ -6195,35 +6195,35 @@ const CodeSelectionTooltip = ({
             <button
               key={code.id}
               onClick={() => onCodeSelect(code)}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-700/80 transition-all text-left border-2 border-transparent hover:border-cyan-500/50 group"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-neutral-700/80 transition-all text-left border-2 border-transparent hover:border-neutral-500/50 group"
             >
               <span 
-                className="w-5 h-5 rounded-full flex-shrink-0 ring-2 ring-white/30 group-hover:ring-cyan-400"
+                className="w-5 h-5 rounded-full flex-shrink-0 ring-2 ring-white/30 group-hover:ring-neutral-400"
                 style={{ backgroundColor: code.color }}
               />
               <div className="flex-1 min-w-0">
                 <p className="text-base text-white truncate font-medium">{code.name}</p>
-                <p className="text-sm text-slate-500 truncate">{code.categoryName}</p>
+                <p className="text-sm text-neutral-500 truncate">{code.categoryName}</p>
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-600 group-hover:text-cyan-400 transition-colors" />
+              <ChevronRight className="w-5 h-5 text-neutral-600 group-hover:text-neutral-400 transition-colors" />
             </button>
           ))}
           
           {codes.length === 0 && (
             <div className="text-center py-8">
-              <Search className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-              <p className="text-base text-slate-500">Nenhum código encontrado</p>
-              <p className="text-sm text-slate-600 mt-1">Tente outro termo ou crie um novo</p>
+              <Search className="w-8 h-8 text-neutral-600 mx-auto mb-2" />
+              <p className="text-base text-neutral-500">Nenhum código encontrado</p>
+              <p className="text-sm text-neutral-600 mt-1">Tente outro termo ou crie um novo</p>
             </div>
           )}
         </div>
         
         {/* Criar novo código */}
-        <div className="pt-4 border-t border-slate-700">
+        <div className="pt-4 border-t border-neutral-700">
           {!showCreator ? (
             <button
               onClick={onToggleCreator}
-              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-gradient-to-r from-cyan-600/30 to-blue-600/30 border-2 border-cyan-500/50 rounded-xl text-cyan-400 hover:from-cyan-600/40 hover:to-blue-600/40 hover:border-cyan-400 transition-all"
+              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-neutral-800 border-2 border-neutral-500/50 rounded-xl text-neutral-400 hover:bg-neutral-700 hover:border-neutral-400 transition-all"
             >
               <Plus className="w-6 h-6" />
               <span className="text-base font-semibold">Criar novo código</span>
@@ -6235,7 +6235,7 @@ const CodeSelectionTooltip = ({
                 value={newCodeName}
                 onChange={(e) => onNewCodeNameChange(e.target.value)}
                 placeholder="Nome do novo código..."
-                className="w-full px-4 py-3 bg-slate-800 border-2 border-cyan-500 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-cyan-500/30 text-white"
+                className="w-full px-4 py-3 bg-neutral-800 border-2 border-neutral-500 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-neutral-500/30 text-white"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && newCodeName.trim()) onCreateNew();
                   if (e.key === 'Escape') onToggleCreator();
@@ -6245,14 +6245,14 @@ const CodeSelectionTooltip = ({
               <div className="flex gap-3">
                 <button
                   onClick={onToggleCreator}
-                  className="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 rounded-xl text-base text-slate-300 transition-colors border border-slate-600"
+                  className="flex-1 px-4 py-3 bg-neutral-700 hover:bg-neutral-600 rounded-xl text-base text-neutral-300 transition-colors border border-neutral-600"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={onCreateNew}
                   disabled={!newCodeName.trim()}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl text-base text-white font-semibold hover:from-cyan-500 hover:to-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 py-3 bg-neutral-700 rounded-xl text-base text-white font-semibold hover:bg-neutral-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Criar e Aplicar
                 </button>
@@ -7119,6 +7119,151 @@ export default function TextAnalysisApp() {
     } catch (err) {
       console.error('Export Markdown error:', err);
       alert('Erro ao exportar Markdown: ' + err.message);
+    }
+  }, [codedSegments]);
+
+  const exportCodingPDF = useCallback(() => {
+    if (codedSegments.length === 0) return;
+    const allCodes = getAllCodes();
+
+    // Build HTML for PDF
+    let html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+      body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a1a1a; padding: 40px; font-size: 12px; line-height: 1.5; }
+      h1 { font-size: 22px; border-bottom: 2px solid #333; padding-bottom: 8px; }
+      h2 { font-size: 16px; color: #333; margin-top: 24px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+      h3 { font-size: 13px; color: #555; margin-top: 16px; }
+      .meta { color: #777; font-size: 11px; margin-bottom: 20px; }
+      blockquote { border-left: 3px solid #999; margin: 8px 0; padding: 6px 12px; background: #f5f5f5; color: #333; }
+      .codes { font-size: 11px; color: #444; margin: 4px 0; }
+      .code-tag { display: inline-block; background: #e0e0e0; border-radius: 3px; padding: 1px 6px; margin: 1px 2px; font-size: 10px; }
+      .note { font-style: italic; color: #666; font-size: 11px; margin: 2px 0; }
+      .type { font-size: 10px; color: #999; }
+      table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+      th { background: #333; color: #fff; padding: 6px 10px; text-align: left; font-size: 11px; }
+      td { border-bottom: 1px solid #ddd; padding: 5px 10px; font-size: 11px; }
+      tr:nth-child(even) { background: #f9f9f9; }
+      .page-break { page-break-before: always; }
+    </style></head><body>`;
+
+    html += `<h1>Relatório de Codificação Qualitativa</h1>`;
+    html += `<p class="meta">Data: ${new Date().toLocaleString('pt-BR')} · Total de segmentos: ${codedSegments.length}</p>`;
+
+    const byDocument = {};
+    codedSegments.forEach(seg => {
+      if (!byDocument[seg.documentName]) byDocument[seg.documentName] = [];
+      byDocument[seg.documentName].push(seg);
+    });
+
+    Object.entries(byDocument).forEach(([docName, segments], docIdx) => {
+      if (docIdx > 0) html += `<div class="page-break"></div>`;
+      html += `<h2>${docName} (${segments.length} segmentos)</h2>`;
+      segments.forEach((seg, idx) => {
+        html += `<h3>Segmento ${idx + 1}</h3>`;
+        html += `<blockquote>${seg.text.replace(/\n/g, '<br>')}</blockquote>`;
+        const codeNames = seg.codes.map(codeId => {
+          const code = allCodes.find(c => c.id === codeId);
+          return `<span class="code-tag">${code ? code.name : codeId}</span>`;
+        });
+        html += `<div class="codes">Códigos: ${codeNames.join(' ')}</div>`;
+        if (seg.note) html += `<div class="note">Nota: ${seg.note}</div>`;
+        html += `<div class="type">${seg.isAutomatic ? 'Automático' : 'Manual'} · ${new Date(seg.createdAt).toLocaleString('pt-BR')}</div>`;
+      });
+    });
+
+    // Summary table
+    html += `<div class="page-break"></div>`;
+    html += `<h2>Resumo por Código</h2>`;
+    html += `<table><tr><th>Código</th><th>Nome</th><th>Categoria</th><th>Frequência</th></tr>`;
+    const codeFreq = {};
+    codedSegments.forEach(seg => { seg.codes.forEach(codeId => { codeFreq[codeId] = (codeFreq[codeId] || 0) + 1; }); });
+    Object.entries(codeFreq).sort((a, b) => b[1] - a[1]).forEach(([codeId, count]) => {
+      const code = allCodes.find(c => c.id === codeId);
+      const catId = codeId.split('.')[0];
+      html += `<tr><td>${codeId}</td><td>${code ? code.name : '–'}</td><td>${catId}</td><td>${count}</td></tr>`;
+    });
+    html += `</table></body></html>`;
+
+    // Use browser print to PDF
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(html);
+      printWindow.document.close();
+      setTimeout(() => { printWindow.print(); }, 500);
+    }
+  }, [codedSegments]);
+
+  const exportCodingDOCX = useCallback(() => {
+    if (codedSegments.length === 0) return;
+    const allCodes = getAllCodes();
+
+    // Build a simple .doc HTML format (Word can open HTML as .doc)
+    let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+    <head><meta charset="utf-8">
+    <!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]-->
+    <style>
+      body { font-family: Calibri, sans-serif; font-size: 11pt; color: #1a1a1a; }
+      h1 { font-size: 18pt; color: #000; border-bottom: 2pt solid #000; padding-bottom: 4pt; }
+      h2 { font-size: 14pt; color: #222; page-break-before: always; margin-top: 20pt; }
+      h3 { font-size: 11pt; color: #444; margin-top: 12pt; }
+      .meta { color: #666; font-size: 10pt; }
+      blockquote { border-left: 3pt solid #888; padding-left: 10pt; margin: 6pt 0; color: #333; background: #f5f5f5; }
+      .codes { font-size: 10pt; color: #444; }
+      .note { font-style: italic; color: #666; font-size: 10pt; }
+      .type { font-size: 9pt; color: #999; }
+      table { border-collapse: collapse; width: 100%; }
+      th { background: #333; color: #fff; padding: 4pt 8pt; font-size: 10pt; }
+      td { border: 1pt solid #ccc; padding: 3pt 8pt; font-size: 10pt; }
+    </style></head><body>`;
+
+    html += `<h1>Relatório de Codificação Qualitativa</h1>`;
+    html += `<p class="meta">Data: ${new Date().toLocaleString('pt-BR')} | Segmentos: ${codedSegments.length}</p>`;
+
+    const byDocument = {};
+    codedSegments.forEach(seg => {
+      if (!byDocument[seg.documentName]) byDocument[seg.documentName] = [];
+      byDocument[seg.documentName].push(seg);
+    });
+
+    Object.entries(byDocument).forEach(([docName, segments]) => {
+      html += `<h2>${docName} (${segments.length} segmentos)</h2>`;
+      segments.forEach((seg, idx) => {
+        html += `<h3>Segmento ${idx + 1}</h3>`;
+        html += `<blockquote>${seg.text.replace(/\n/g, '<br>')}</blockquote>`;
+        const codeNames = seg.codes.map(codeId => {
+          const code = allCodes.find(c => c.id === codeId);
+          return code ? `[${code.name}]` : `[${codeId}]`;
+        });
+        html += `<p class="codes">Códigos: ${codeNames.join(' ')}</p>`;
+        if (seg.note) html += `<p class="note">Nota: ${seg.note}</p>`;
+        html += `<p class="type">${seg.isAutomatic ? 'Automático' : 'Manual'} · ${new Date(seg.createdAt).toLocaleString('pt-BR')}</p>`;
+      });
+    });
+
+    html += `<h2>Resumo por Código</h2>`;
+    html += `<table><tr><th>Código</th><th>Nome</th><th>Categoria</th><th>Freq.</th></tr>`;
+    const codeFreq = {};
+    codedSegments.forEach(seg => { seg.codes.forEach(codeId => { codeFreq[codeId] = (codeFreq[codeId] || 0) + 1; }); });
+    Object.entries(codeFreq).sort((a, b) => b[1] - a[1]).forEach(([codeId, count]) => {
+      const code = allCodes.find(c => c.id === codeId);
+      const catId = codeId.split('.')[0];
+      html += `<tr><td>${codeId}</td><td>${code ? code.name : '–'}</td><td>${catId}</td><td>${count}</td></tr>`;
+    });
+    html += `</table></body></html>`;
+
+    try {
+      const blob = new Blob(['\ufeff' + html], { type: 'application/msword;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `codificacao_${new Date().toISOString().split('T')[0]}.doc`;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Export DOCX error:', err);
+      alert('Erro ao exportar Word: ' + err.message);
     }
   }, [codedSegments]);
 
@@ -8291,33 +8436,33 @@ export default function TextAnalysisApp() {
   
   // Classes de tema
   const theme = isDarkMode ? {
-    bg: 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950',
+    bg: 'bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950',
     text: 'text-white',
-    sidebar: 'bg-slate-900/95',
-    sidebarBorder: 'border-slate-800/50',
-    card: 'bg-slate-800/50',
-    cardBorder: 'border-slate-700',
-    input: 'bg-slate-800 border-slate-700',
-    inputFocus: 'focus:border-cyan-500',
-    muted: 'text-slate-400',
-    mutedBg: 'bg-slate-700',
-    accent: 'text-cyan-400',
-    accentBg: 'bg-cyan-500/20',
-    hover: 'hover:bg-slate-700',
+    sidebar: 'bg-neutral-900/95',
+    sidebarBorder: 'border-neutral-800/50',
+    card: 'bg-neutral-800/50',
+    cardBorder: 'border-neutral-700',
+    input: 'bg-neutral-800 border-neutral-700',
+    inputFocus: 'focus:border-neutral-500',
+    muted: 'text-neutral-400',
+    mutedBg: 'bg-neutral-700',
+    accent: 'text-neutral-400',
+    accentBg: 'bg-neutral-500/20',
+    hover: 'hover:bg-neutral-700',
   } : {
-    bg: 'bg-gradient-to-br from-slate-100 via-white to-slate-100',
-    text: 'text-slate-900',
+    bg: 'bg-gradient-to-br from-neutral-100 via-white to-neutral-100',
+    text: 'text-neutral-900',
     sidebar: 'bg-white/95',
-    sidebarBorder: 'border-slate-200',
+    sidebarBorder: 'border-neutral-200',
     card: 'bg-white',
-    cardBorder: 'border-slate-200',
-    input: 'bg-white border-slate-300',
-    inputFocus: 'focus:border-cyan-500',
-    muted: 'text-slate-600',
-    mutedBg: 'bg-slate-200',
-    accent: 'text-cyan-600',
-    accentBg: 'bg-cyan-100',
-    hover: 'hover:bg-slate-100',
+    cardBorder: 'border-neutral-200',
+    input: 'bg-white border-neutral-300',
+    inputFocus: 'focus:border-neutral-500',
+    muted: 'text-neutral-600',
+    mutedBg: 'bg-neutral-200',
+    accent: 'text-neutral-600',
+    accentBg: 'bg-neutral-100',
+    hover: 'hover:bg-neutral-100',
   };
   
   return (
@@ -8325,9 +8470,9 @@ export default function TextAnalysisApp() {
       {/* Ambient background */}
       {isDarkMode && (
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-neutral-500/10 rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-blue-500/5 to-transparent rounded-full" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-neutral-500/5 to-transparent rounded-full" />
         </div>
       )}
       
@@ -8336,7 +8481,7 @@ export default function TextAnalysisApp() {
         {/* Logo/Header */}
         <div className={`p-4 border-b ${theme.sidebarBorder}`}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-neutral-600 flex items-center justify-center shadow-lg shadow-neutral-500/20 flex-shrink-0">
               <BookOpen className="w-5 h-5 text-white" />
             </div>
             {sidebarOpen && (
@@ -8344,7 +8489,7 @@ export default function TextAnalysisApp() {
                 <h1 className={`text-sm font-bold tracking-tight ${theme.text} leading-tight`}>
                   App para Análise
                 </h1>
-                <h1 className="text-sm font-bold tracking-tight text-cyan-500 leading-tight">
+                <h1 className="text-sm font-bold tracking-tight text-neutral-400 leading-tight">
                   Textual Gratuito
                 </h1>
               </div>
@@ -8358,7 +8503,7 @@ export default function TextAnalysisApp() {
             <button
               onClick={processCorpus}
               disabled={isProcessing}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-medium text-white hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-neutral-700 rounded-xl font-medium text-white hover:shadow-lg hover:shadow-neutral-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
               {isProcessing ? (
                 <>
@@ -8385,17 +8530,17 @@ export default function TextAnalysisApp() {
                 disabled={tab.disabled}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                   activeTab === tab.id
-                    ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-500 border border-cyan-500/30'
+                    ? 'bg-neutral-800 text-neutral-400 border border-neutral-500/30'
                     : tab.disabled
-                      ? `${isDarkMode ? 'text-slate-600' : 'text-slate-400'} cursor-not-allowed`
-                      : `${theme.muted} ${theme.hover} hover:text-cyan-500`
+                      ? `${isDarkMode ? 'text-neutral-600' : 'text-neutral-400'} cursor-not-allowed`
+                      : `${theme.muted} ${theme.hover} hover:text-neutral-400`
                 }`}
                 title={!sidebarOpen ? tab.label : undefined}
               >
-                <tab.icon className={`w-5 h-5 flex-shrink-0 ${activeTab === tab.id ? 'text-cyan-500' : ''}`} />
+                <tab.icon className={`w-5 h-5 flex-shrink-0 ${activeTab === tab.id ? 'text-neutral-400' : ''}`} />
                 {sidebarOpen && <span className="truncate">{tab.label}</span>}
                 {activeTab === tab.id && sidebarOpen && (
-                  <ChevronRight className="w-4 h-4 ml-auto text-cyan-500" />
+                  <ChevronRight className="w-4 h-4 ml-auto text-neutral-400" />
                 )}
               </button>
             ))}
@@ -8404,35 +8549,17 @@ export default function TextAnalysisApp() {
         
         {/* Stats Summary */}
         {analysisResults && sidebarOpen && (
-          <div className={`p-4 border-t ${theme.sidebarBorder} ${isDarkMode ? 'bg-slate-800/30' : 'bg-slate-50'}`}>
+          <div className={`p-4 border-t ${theme.sidebarBorder} ${isDarkMode ? 'bg-neutral-800/30' : 'bg-neutral-50'}`}>
             <div className="grid grid-cols-2 gap-2 text-center">
-              <div className={`${isDarkMode ? 'bg-slate-900/50' : 'bg-white'} rounded-lg p-2 shadow-sm`}>
-                <div className="text-lg font-bold text-cyan-500">{(documents || []).length}</div>
+              <div className={`${isDarkMode ? 'bg-neutral-900/50' : 'bg-white'} rounded-lg p-2 shadow-sm`}>
+                <div className="text-lg font-bold text-neutral-400">{(documents || []).length}</div>
                 <div className={`text-xs ${theme.muted}`}>Docs</div>
               </div>
-              <div className={`${isDarkMode ? 'bg-slate-900/50' : 'bg-white'} rounded-lg p-2 shadow-sm`}>
+              <div className={`${isDarkMode ? 'bg-neutral-900/50' : 'bg-white'} rounded-lg p-2 shadow-sm`}>
                 <div className="text-lg font-bold text-purple-500">{analysisResults.stats?.totalWords?.toLocaleString() || 0}</div>
                 <div className={`text-xs ${theme.muted}`}>Palavras</div>
               </div>
             </div>
-          </div>
-        )}
-        
-        {/* Theme Toggle */}
-        {sidebarOpen && (
-          <div className={`p-4 border-t ${theme.sidebarBorder}`}>
-            <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl ${theme.hover} transition-colors`}
-            >
-              <span className={`text-sm flex items-center gap-2 ${theme.muted}`}>
-                {isDarkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-                {isDarkMode ? 'Modo Escuro' : 'Modo Claro'}
-              </span>
-              <div className={`w-10 h-5 rounded-full relative transition-colors ${isDarkMode ? 'bg-cyan-500' : 'bg-slate-300'}`}>
-                <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${isDarkMode ? 'left-5' : 'left-0.5'}`} />
-              </div>
-            </button>
           </div>
         )}
         
@@ -8445,7 +8572,7 @@ export default function TextAnalysisApp() {
               </div>
               <div className="text-xs">
                 <span className={theme.muted}>Por </span>
-                <span className="text-cyan-500">Lucas O. Teixeira</span>
+                <span className="text-neutral-400">Lucas O. Teixeira</span>
               </div>
               <div className="text-xs">
                 <span className={theme.muted}>com </span>
@@ -8460,7 +8587,7 @@ export default function TextAnalysisApp() {
         {/* Toggle Button */}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className={`absolute -right-3 top-20 w-6 h-6 ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-300'} border rounded-full flex items-center justify-center ${theme.hover} transition-colors hidden lg:flex shadow-md`}
+          className={`absolute -right-3 top-20 w-6 h-6 ${isDarkMode ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-300'} border rounded-full flex items-center justify-center ${theme.hover} transition-colors hidden lg:flex shadow-md`}
         >
           <ChevronRight className={`w-4 h-4 ${theme.muted} transition-transform ${sidebarOpen ? 'rotate-180' : ''}`} />
         </button>
@@ -8469,7 +8596,7 @@ export default function TextAnalysisApp() {
       {/* Mobile Sidebar Toggle */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className={`lg:hidden fixed top-4 left-4 z-50 p-2.5 ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-300 shadow-md'} border rounded-xl`}
+        className={`lg:hidden fixed top-4 left-4 z-50 p-2.5 ${isDarkMode ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-300 shadow-md'} border rounded-xl`}
       >
         {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
@@ -8490,7 +8617,7 @@ export default function TextAnalysisApp() {
         {activeTab === 'upload' && (
           <div className="space-y-8">
             {/* ========== GERENCIADOR DE CORPUS ========== */}
-            <div className={`${isDarkMode ? 'bg-gradient-to-br from-slate-800/50 to-purple-900/20 border-purple-500/30' : 'bg-gradient-to-br from-white to-purple-50 border-purple-200'} rounded-2xl p-6 border`}>
+            <div className={`${isDarkMode ? 'bg-gradient-to-br from-neutral-800/50 to-purple-900/20 border-purple-500/30' : 'bg-gradient-to-br from-white to-purple-50 border-purple-200'} rounded-2xl p-6 border`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Layers className="w-5 h-5 text-purple-400" />
@@ -8521,7 +8648,7 @@ export default function TextAnalysisApp() {
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
                       activeCorpus === corpus.id 
                         ? `${isDarkMode ? 'bg-white/10' : 'bg-purple-50'} border-2` 
-                        : `${isDarkMode ? 'bg-slate-800/50 border-slate-600 hover:border-slate-500' : 'bg-white border-slate-200 hover:border-slate-300'} border`
+                        : `${isDarkMode ? 'bg-neutral-800/50 border-neutral-600 hover:border-neutral-500' : 'bg-white border-neutral-200 hover:border-neutral-300'} border`
                     }`}
                     style={{ borderColor: activeCorpus === corpus.id ? corpus.color : undefined }}
                   >
@@ -8555,7 +8682,7 @@ export default function TextAnalysisApp() {
                   {(corpora || []).map(corpus => (
                     <div 
                       key={corpus.id}
-                      className={`flex items-center gap-3 p-3 rounded-lg ${isDarkMode ? 'bg-slate-800/50' : 'bg-white border border-slate-200'}`}
+                      className={`flex items-center gap-3 p-3 rounded-lg ${isDarkMode ? 'bg-neutral-800/50' : 'bg-white border border-neutral-200'}`}
                     >
                       <span 
                         className="w-4 h-4 rounded-full flex-shrink-0" 
@@ -8565,9 +8692,9 @@ export default function TextAnalysisApp() {
                         type="text"
                         value={corpus.name}
                         onChange={(e) => renameCorpus(corpus.id, e.target.value)}
-                        className="flex-1 bg-transparent border-b border-transparent hover:border-slate-600 focus:border-cyan-500 focus:outline-none text-sm"
+                        className="flex-1 bg-transparent border-b border-transparent hover:border-neutral-600 focus:border-neutral-500 focus:outline-none text-sm"
                       />
-                      <span className="text-xs text-slate-500">
+                      <span className="text-xs text-neutral-500">
                         {corpus.documentIds?.length || 0} documentos
                       </span>
                       {corpus.id !== 'default' && (
@@ -8597,12 +8724,12 @@ export default function TextAnalysisApp() {
                 onChange={handleFileUpload}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               />
-              <div className="border-2 border-dashed border-slate-700 rounded-2xl p-12 text-center hover:border-cyan-500/50 hover:bg-slate-800/30 transition-all duration-300">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 flex items-center justify-center">
-                  <Upload className="w-8 h-8 text-cyan-400" />
+              <div className="border-2 border-dashed border-neutral-700 rounded-2xl p-12 text-center hover:border-neutral-500/50 hover:bg-neutral-800/30 transition-all duration-300">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-neutral-800 flex items-center justify-center">
+                  <Upload className="w-8 h-8 text-neutral-400" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">Arraste arquivos ou clique para selecionar</h3>
-                <p className="text-slate-400 text-sm mb-2">
+                <p className="text-neutral-400 text-sm mb-2">
                   Arquivos serão adicionados ao corpus: 
                   <span 
                     className="ml-1 font-medium"
@@ -8616,14 +8743,14 @@ export default function TextAnalysisApp() {
                     { ext: 'PDF', colorDark: 'bg-red-500/20 text-red-300', colorLight: 'bg-red-100 text-red-600' },
                     { ext: 'DOCX', colorDark: 'bg-blue-500/20 text-blue-300', colorLight: 'bg-blue-100 text-blue-600' },
                     { ext: 'DOC', colorDark: 'bg-blue-500/20 text-blue-300', colorLight: 'bg-blue-100 text-blue-600' },
-                    { ext: 'TXT', colorDark: 'bg-slate-500/20 text-slate-300', colorLight: 'bg-slate-200 text-slate-600' },
+                    { ext: 'TXT', colorDark: 'bg-neutral-500/20 text-neutral-300', colorLight: 'bg-neutral-200 text-neutral-600' },
                     { ext: 'CSV', colorDark: 'bg-green-500/20 text-green-300', colorLight: 'bg-green-100 text-green-600' },
                     { ext: 'XLSX', colorDark: 'bg-emerald-500/20 text-emerald-300', colorLight: 'bg-emerald-100 text-emerald-600' },
                     { ext: 'RTF', colorDark: 'bg-purple-500/20 text-purple-300', colorLight: 'bg-purple-100 text-purple-600' },
-                    { ext: 'MD', colorDark: 'bg-slate-500/20 text-slate-300', colorLight: 'bg-slate-200 text-slate-600' },
+                    { ext: 'MD', colorDark: 'bg-neutral-500/20 text-neutral-300', colorLight: 'bg-neutral-200 text-neutral-600' },
                     { ext: 'HTML', colorDark: 'bg-orange-500/20 text-orange-300', colorLight: 'bg-orange-100 text-orange-600' },
                     { ext: 'JSON', colorDark: 'bg-yellow-500/20 text-yellow-300', colorLight: 'bg-yellow-100 text-yellow-700' },
-                    { ext: 'XML', colorDark: 'bg-cyan-500/20 text-cyan-300', colorLight: 'bg-cyan-100 text-cyan-600' },
+                    { ext: 'XML', colorDark: 'bg-neutral-500/20 text-neutral-200', colorLight: 'bg-neutral-100 text-neutral-600' },
                     { ext: 'ODT', colorDark: 'bg-indigo-500/20 text-indigo-300', colorLight: 'bg-indigo-100 text-indigo-600' },
                   ].map(format => (
                     <span key={format.ext} className={`text-xs px-2 py-1 rounded ${isDarkMode ? format.colorDark : format.colorLight}`}>
@@ -8641,13 +8768,13 @@ export default function TextAnalysisApp() {
                   <div 
                     key={id} 
                     className={`flex items-center gap-3 p-3 rounded-lg ${
-                      status.status === 'loading' ? 'bg-cyan-500/10 border border-cyan-500/30' :
+                      status.status === 'loading' ? 'bg-neutral-500/10 border border-neutral-500/30' :
                       status.status === 'success' ? 'bg-green-500/10 border border-green-500/30' :
                       'bg-red-500/10 border border-red-500/30'
                     }`}
                   >
                     {status.status === 'loading' && (
-                      <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
+                      <Loader2 className="w-4 h-4 text-neutral-400 animate-spin" />
                     )}
                     {status.status === 'success' && (
                       <Check className="w-4 h-4 text-green-400" />
@@ -8656,7 +8783,7 @@ export default function TextAnalysisApp() {
                       <X className="w-4 h-4 text-red-400" />
                     )}
                     <span className={`text-sm ${
-                      status.status === 'loading' ? 'text-cyan-300' :
+                      status.status === 'loading' ? 'text-neutral-200' :
                       status.status === 'success' ? 'text-green-300' :
                       'text-red-300'
                     }`}>
@@ -8670,7 +8797,7 @@ export default function TextAnalysisApp() {
             )}
             
             {/* ========== GERENCIADOR DE STOPWORDS ========== */}
-            <div className={`${isDarkMode ? 'bg-gradient-to-br from-slate-800/50 to-amber-900/20 border-amber-500/30' : 'bg-gradient-to-br from-white to-amber-50 border-amber-200'} rounded-2xl p-6 border`}>
+            <div className={`${isDarkMode ? 'bg-gradient-to-br from-neutral-800/50 to-amber-900/20 border-amber-500/30' : 'bg-gradient-to-br from-white to-amber-50 border-amber-200'} rounded-2xl p-6 border`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Filter className="w-5 h-5 text-amber-400" />
@@ -8776,7 +8903,7 @@ export default function TextAnalysisApp() {
                       {filteredStopwords.slice(0, 100).map(word => (
                         <span
                           key={word}
-                          className={`inline-flex items-center gap-1 px-2 py-1 ${isDarkMode ? 'bg-slate-700' : 'bg-slate-200'} rounded text-xs group hover:bg-red-500/20 transition-colors`}
+                          className={`inline-flex items-center gap-1 px-2 py-1 ${isDarkMode ? 'bg-neutral-700' : 'bg-neutral-200'} rounded text-xs group hover:bg-red-500/20 transition-colors`}
                         >
                           {word}
                           <button
@@ -8801,7 +8928,7 @@ export default function TextAnalysisApp() {
             {/* Cleaning Options */}
             <div className={`${theme.card} rounded-2xl p-6 border ${theme.cardBorder}`}>
               <div className="flex items-center gap-2 mb-4">
-                <Settings className="w-5 h-5 text-cyan-400" />
+                <Settings className="w-5 h-5 text-neutral-400" />
                 <h3 className="font-semibold">Opções de Limpeza</h3>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
@@ -8816,7 +8943,7 @@ export default function TextAnalysisApp() {
                       type="checkbox"
                       checked={cleaningOptions[opt.key]}
                       onChange={(e) => setCleaningOptions(prev => ({ ...prev, [opt.key]: e.target.checked }))}
-                      className={`w-4 h-4 rounded ${isDarkMode ? 'border-slate-600 bg-slate-700' : 'border-slate-300 bg-white'} text-cyan-500 focus:ring-cyan-500`}
+                      className={`w-4 h-4 rounded ${isDarkMode ? 'border-neutral-600 bg-neutral-700' : 'border-neutral-300 bg-white'} text-neutral-400 focus:ring-neutral-500`}
                     />
                     <span className={`text-sm ${theme.textSecondary}`}>{opt.label}</span>
                   </label>
@@ -8829,7 +8956,7 @@ export default function TextAnalysisApp() {
                     max="10"
                     value={cleaningOptions.minLength}
                     onChange={(e) => setCleaningOptions(prev => ({ ...prev, minLength: parseInt(e.target.value) || 2 }))}
-                    className={`w-16 px-2 py-1 rounded ${isDarkMode ? 'bg-slate-700 border-slate-600' : 'bg-white border-slate-300'} border text-sm`}
+                    className={`w-16 px-2 py-1 rounded ${isDarkMode ? 'bg-neutral-700 border-neutral-600' : 'bg-white border-neutral-300'} border text-sm`}
                   />
                 </div>
               </div>
@@ -8837,13 +8964,13 @@ export default function TextAnalysisApp() {
               {/* Opção de Agrupamento Morfológico - Destacada */}
               <div className={`mt-4 p-4 rounded-xl border ${cleaningOptions.groupVariations 
                 ? (isDarkMode ? 'bg-purple-900/20 border-purple-500/30' : 'bg-purple-50 border-purple-200') 
-                : (isDarkMode ? 'bg-slate-900/50 border-slate-600' : 'bg-slate-50 border-slate-200')} transition-all`}>
+                : (isDarkMode ? 'bg-neutral-900/50 border-neutral-600' : 'bg-neutral-50 border-neutral-200')} transition-all`}>
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={cleaningOptions.groupVariations}
                     onChange={(e) => setCleaningOptions(prev => ({ ...prev, groupVariations: e.target.checked }))}
-                    className={`w-5 h-5 mt-0.5 rounded ${isDarkMode ? 'border-slate-600 bg-slate-700' : 'border-slate-300 bg-white'} text-purple-500 focus:ring-purple-500`}
+                    className={`w-5 h-5 mt-0.5 rounded ${isDarkMode ? 'border-neutral-600 bg-neutral-700' : 'border-neutral-300 bg-white'} text-purple-500 focus:ring-purple-500`}
                   />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -8856,10 +8983,10 @@ export default function TextAnalysisApp() {
                     </p>
                     {cleaningOptions.groupVariations && (
                       <div className="flex flex-wrap gap-2 mt-2">
-                        <span className={`text-xs ${isDarkMode ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-700'} px-2 py-1 rounded`}>ministro = ministra</span>
-                        <span className={`text-xs ${isDarkMode ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-700'} px-2 py-1 rounded`}>ministros = ministras</span>
-                        <span className={`text-xs ${isDarkMode ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-700'} px-2 py-1 rounded`}>ministrx = ministr@</span>
-                        <span className={`text-xs ${isDarkMode ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-700'} px-2 py-1 rounded`}>typos detectados</span>
+                        <span className={`text-xs ${isDarkMode ? 'bg-neutral-700 text-neutral-300' : 'bg-neutral-200 text-neutral-700'} px-2 py-1 rounded`}>ministro = ministra</span>
+                        <span className={`text-xs ${isDarkMode ? 'bg-neutral-700 text-neutral-300' : 'bg-neutral-200 text-neutral-700'} px-2 py-1 rounded`}>ministros = ministras</span>
+                        <span className={`text-xs ${isDarkMode ? 'bg-neutral-700 text-neutral-300' : 'bg-neutral-200 text-neutral-700'} px-2 py-1 rounded`}>ministrx = ministr@</span>
+                        <span className={`text-xs ${isDarkMode ? 'bg-neutral-700 text-neutral-300' : 'bg-neutral-200 text-neutral-700'} px-2 py-1 rounded`}>typos detectados</span>
                       </div>
                     )}
                   </div>
@@ -8872,7 +8999,7 @@ export default function TextAnalysisApp() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-cyan-400" />
+                    <FileText className="w-5 h-5 text-neutral-400" />
                     Documentos Carregados ({(documents || []).length})
                   </h3>
                   <div className="flex items-center gap-3">
@@ -8880,7 +9007,7 @@ export default function TextAnalysisApp() {
                     <select
                       value={corpusFilter}
                       onChange={(e) => setCorpusFilter(e.target.value)}
-                      className={`px-3 py-1.5 ${isDarkMode ? 'bg-slate-700 border-slate-600' : 'bg-white border-slate-300'} border rounded-lg text-sm focus:border-cyan-500 focus:outline-none`}
+                      className={`px-3 py-1.5 ${isDarkMode ? 'bg-neutral-700 border-neutral-600' : 'bg-white border-neutral-300'} border rounded-lg text-sm focus:border-neutral-500 focus:outline-none`}
                     >
                       <option value="all">Todos os corpus</option>
                       {(corpora || []).map(c => (
@@ -8912,10 +9039,10 @@ export default function TextAnalysisApp() {
                       html: 'bg-orange-500/20 text-orange-300',
                       htm: 'bg-orange-500/20 text-orange-300',
                       json: 'bg-yellow-500/20 text-yellow-300',
-                      xml: 'bg-cyan-500/20 text-cyan-300',
+                      xml: 'bg-neutral-500/20 text-neutral-200',
                       odt: 'bg-indigo-500/20 text-indigo-300',
-                      txt: 'bg-slate-500/20 text-slate-300',
-                      md: 'bg-slate-500/20 text-slate-300',
+                      txt: 'bg-neutral-500/20 text-neutral-300',
+                      md: 'bg-neutral-500/20 text-neutral-300',
                     } : {
                       pdf: 'bg-red-100 text-red-600',
                       docx: 'bg-blue-100 text-blue-600',
@@ -8927,21 +9054,21 @@ export default function TextAnalysisApp() {
                       html: 'bg-orange-100 text-orange-600',
                       htm: 'bg-orange-100 text-orange-600',
                       json: 'bg-yellow-100 text-yellow-700',
-                      xml: 'bg-cyan-100 text-cyan-600',
+                      xml: 'bg-neutral-100 text-neutral-600',
                       odt: 'bg-indigo-100 text-indigo-600',
-                      txt: 'bg-slate-200 text-slate-600',
-                      md: 'bg-slate-200 text-slate-600',
+                      txt: 'bg-neutral-200 text-neutral-600',
+                      md: 'bg-neutral-200 text-neutral-600',
                     };
-                    const colorClass = typeColors[ext] || (isDarkMode ? 'bg-slate-500/20 text-slate-300' : 'bg-slate-200 text-slate-600');
+                    const colorClass = typeColors[ext] || (isDarkMode ? 'bg-neutral-500/20 text-neutral-300' : 'bg-neutral-200 text-neutral-600');
                     
                     return (
                       <div
                         key={doc.id}
-                        className={`flex items-center justify-between p-4 ${isDarkMode ? 'bg-slate-800/50 border-slate-700 hover:border-slate-600' : 'bg-white border-slate-200 hover:border-slate-300'} rounded-xl border transition-all`}
+                        className={`flex items-center justify-between p-4 ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700 hover:border-neutral-600' : 'bg-white border-neutral-200 hover:border-neutral-300'} rounded-xl border transition-all`}
                         style={{ borderLeftWidth: '3px', borderLeftColor: docCorpus?.color || '#22d3ee' }}
                       >
                         <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 rounded-lg ${isDarkMode ? 'bg-slate-700' : 'bg-slate-100'} flex items-center justify-center`}>
+                          <div className={`w-10 h-10 rounded-lg ${isDarkMode ? 'bg-neutral-700' : 'bg-neutral-100'} flex items-center justify-center`}>
                             <FileText className={`w-5 h-5 ${theme.textMuted}`} />
                           </div>
                           <div>
@@ -8967,7 +9094,7 @@ export default function TextAnalysisApp() {
                           <select
                             value={docCorpus?.id || 'default'}
                             onChange={(e) => moveDocumentToCorpus(doc.id, e.target.value)}
-                            className="px-2 py-1 bg-slate-700 border border-slate-600 rounded text-xs focus:border-cyan-500 focus:outline-none"
+                            className="px-2 py-1 bg-neutral-700 border border-neutral-600 rounded text-xs focus:border-neutral-500 focus:outline-none"
                           >
                             {(corpora || []).map(c => (
                               <option key={c.id} value={c.id}>{c.name}</option>
@@ -8975,7 +9102,7 @@ export default function TextAnalysisApp() {
                           </select>
                           <button
                             onClick={() => removeDocument(doc.id)}
-                            className="p-2 text-slate-400 hover:text-red-400 transition-colors"
+                            className="p-2 text-neutral-400 hover:text-red-400 transition-colors"
                           >
                             <X className="w-5 h-5" />
                           </button>
@@ -8999,22 +9126,22 @@ export default function TextAnalysisApp() {
               {/* Top Words */}
               <div className={`${theme.card} rounded-2xl p-6 border ${theme.cardBorder}`}>
                 <h3 className="font-semibold mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-cyan-400" />
+                  <TrendingUp className="w-5 h-5 text-neutral-400" />
                   Top 30 Palavras
                 </h3>
                 <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
                   {analysisResults.wordFrequency.slice(0, 30).map((word, idx) => (
                     <div key={idx} className="flex items-center gap-3">
-                      <span className="w-6 text-right text-slate-500 text-sm">{idx + 1}</span>
-                      <div className="flex-1 h-8 bg-slate-700/50 rounded-lg overflow-hidden">
+                      <span className="w-6 text-right text-neutral-500 text-sm">{idx + 1}</span>
+                      <div className="flex-1 h-8 bg-neutral-700/50 rounded-lg overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-cyan-500/30 to-blue-500/30 rounded-lg flex items-center px-3"
+                          className="h-full bg-neutral-800 rounded-lg flex items-center px-3"
                           style={{ width: `${(word.count / analysisResults.wordFrequency[0].count) * 100}%` }}
                         >
                           <span className="text-sm font-medium truncate">{word.word}</span>
                         </div>
                       </div>
-                      <span className="w-12 text-right text-slate-400 text-sm">{word.count}</span>
+                      <span className="w-12 text-right text-neutral-400 text-sm">{word.count}</span>
                     </div>
                   ))}
                 </div>
@@ -9023,7 +9150,7 @@ export default function TextAnalysisApp() {
               {/* Frequency Distribution */}
               <div className={`${theme.card} rounded-2xl p-6 border ${theme.cardBorder}`}>
                 <h3 className="font-semibold mb-4 flex items-center gap-2">
-                  <PieChart className="w-5 h-5 text-cyan-400" />
+                  <PieChart className="w-5 h-5 text-neutral-400" />
                   Distribuição de Frequências
                 </h3>
                 <div className="space-y-4">
@@ -9037,8 +9164,8 @@ export default function TextAnalysisApp() {
                     const percentage = ((item.count / analysisResults.stats.uniqueWords) * 100).toFixed(1);
                     return (
                       <div key={idx} className="flex items-center gap-3">
-                        <span className="w-24 text-sm text-slate-400">{item.label}</span>
-                        <div className="flex-1 h-6 bg-slate-700/50 rounded-lg overflow-hidden">
+                        <span className="w-24 text-sm text-neutral-400">{item.label}</span>
+                        <div className="flex-1 h-6 bg-neutral-700/50 rounded-lg overflow-hidden">
                           <div
                             className="h-full rounded-lg"
                             style={{ 
@@ -9047,7 +9174,7 @@ export default function TextAnalysisApp() {
                             }}
                           />
                         </div>
-                        <span className="w-20 text-right text-sm text-slate-400">{item.count} ({percentage}%)</span>
+                        <span className="w-20 text-right text-sm text-neutral-400">{item.count} ({percentage}%)</span>
                       </div>
                     );
                   })}
@@ -9059,7 +9186,7 @@ export default function TextAnalysisApp() {
         
         {/* Word Cloud Tab */}
         {activeTab === 'wordcloud' && analysisResults && analysisResults.wordFrequency && (
-          <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200'}`}>
+          <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
             <VisualizationHeader vizKey="wordcloud" icon={Cloud} extraContent={
               <ExportVisualizationButton 
                 vizId="wordcloud" 
@@ -9071,10 +9198,10 @@ export default function TextAnalysisApp() {
                 }))}
               />
             } />
-            <p className={`text-sm mb-6 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+            <p className={`text-sm mb-6 ${isDarkMode ? 'text-neutral-400' : 'text-neutral-600'}`}>
               💡 <strong>Clique em qualquer palavra</strong> para ver análise detalhada de todas as incidências
             </p>
-            <div data-viz="wordcloud" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-slate-900/50' : 'bg-slate-50'}`}>
+            <div data-viz="wordcloud" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-neutral-900/50' : 'bg-neutral-50'}`}>
               <WordCloudComponent 
                 words={analysisResults.wordFrequency} 
                 width={800} 
@@ -9087,7 +9214,7 @@ export default function TextAnalysisApp() {
         
         {/* TermsBerry Tab */}
         {activeTab === 'termsberry' && analysisResults && analysisResults.wordFrequency && (
-          <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200'}`}>
+          <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
             <VisualizationHeader vizKey="termsberry" icon={CircleDot} extraContent={
               <ExportVisualizationButton 
                 vizId="termsberry" 
@@ -9098,7 +9225,7 @@ export default function TextAnalysisApp() {
                 }))}
               />
             } />
-            <div data-viz="termsberry" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-slate-900/50' : 'bg-slate-50'}`}>
+            <div data-viz="termsberry" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-neutral-900/50' : 'bg-neutral-50'}`}>
               <TermsBerryVisualization 
                 words={analysisResults.wordFrequency} 
                 width={700} 
@@ -9111,7 +9238,7 @@ export default function TextAnalysisApp() {
         
         {/* AFC Tab */}
         {activeTab === 'afc' && afcData && (
-          <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200'}`}>
+          <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
             <VisualizationHeader vizKey="afc" icon={Sparkles} extraContent={
               <ExportVisualizationButton 
                 vizId="afc" 
@@ -9124,7 +9251,7 @@ export default function TextAnalysisApp() {
                 }))}
               />
             } />
-            <div data-viz="afc" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-slate-900/50' : 'bg-slate-50'}`}>
+            <div data-viz="afc" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-neutral-900/50' : 'bg-neutral-50'}`}>
               <AFCVisualization afcData={afcData} width={850} height={650} />
             </div>
           </div>
@@ -9132,7 +9259,7 @@ export default function TextAnalysisApp() {
         
         {/* Treemap Tab */}
         {activeTab === 'treemap' && analysisResults && analysisResults.wordFrequency && (
-          <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200'}`}>
+          <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
             <VisualizationHeader vizKey="treemap" icon={LayoutGrid} extraContent={
               <ExportVisualizationButton 
                 vizId="treemap" 
@@ -9143,7 +9270,7 @@ export default function TextAnalysisApp() {
                 }))}
               />
             } />
-            <div data-viz="treemap" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-slate-900/50' : 'bg-slate-50'}`}>
+            <div data-viz="treemap" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-neutral-900/50' : 'bg-neutral-50'}`}>
               <TreemapVisualization 
                 words={analysisResults.wordFrequency} 
                 width={800} 
@@ -9156,7 +9283,7 @@ export default function TextAnalysisApp() {
         
         {/* Network Tab */}
         {activeTab === 'network' && analysisResults && analysisResults.cooccurrences && (
-          <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200'}`}>
+          <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
             <VisualizationHeader vizKey="network" icon={Network} extraContent={
               <ExportVisualizationButton 
                 vizId="network" 
@@ -9168,7 +9295,7 @@ export default function TextAnalysisApp() {
                 }))}
               />
             } />
-            <div data-viz="network" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-slate-900/50' : 'bg-slate-50'}`}>
+            <div data-viz="network" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-neutral-900/50' : 'bg-neutral-50'}`}>
               <NetworkGraph cooccurrences={analysisResults.cooccurrences} width={800} height={550} fullText={analysisResults.fullText} documents={filteredDocuments} />
             </div>
           </div>
@@ -9177,7 +9304,7 @@ export default function TextAnalysisApp() {
         {/* Bigrams Tab - Rede de Bigramas */}
         {activeTab === 'bigrams' && bigramAnalysis && (
           <div className="space-y-6">
-            <div className={`rounded-2xl p-6 border ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200'}`}>
+            <div className={`rounded-2xl p-6 border ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
               <VisualizationHeader vizKey="bigrams" icon={MessageCircle} extraContent={
                 <ExportVisualizationButton 
                   vizId="bigrams" 
@@ -9190,27 +9317,27 @@ export default function TextAnalysisApp() {
                   }))}
                 />
               } />
-              <div data-viz="bigrams" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-slate-900/50' : 'bg-slate-50'}`}>
+              <div data-viz="bigrams" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-neutral-900/50' : 'bg-neutral-50'}`}>
                 <BigramNetworkVisualization bigramNetwork={bigramAnalysis.network} width={800} height={550} />
               </div>
             </div>
             
             {/* Top Bigramas */}
-            <div className={`rounded-2xl p-6 border ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200'}`}>
-              <h4 className={`font-medium mb-4 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>Top 30 Bigramas mais Frequentes</h4>
+            <div className={`rounded-2xl p-6 border ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
+              <h4 className={`font-medium mb-4 ${isDarkMode ? 'text-neutral-300' : 'text-neutral-700'}`}>Top 30 Bigramas mais Frequentes</h4>
               <div className="grid md:grid-cols-3 gap-2">
                 {bigramAnalysis.bigrams.slice(0, 30).map((b, idx) => (
                   <div 
                     key={b.bigram}
-                    className="flex items-center justify-between px-3 py-2 bg-slate-900/50 rounded-lg"
+                    className="flex items-center justify-between px-3 py-2 bg-neutral-900/50 rounded-lg"
                   >
                     <span className="text-sm">
-                      <span className="text-slate-500 mr-2">{idx + 1}.</span>
-                      <span className="text-cyan-400">{b.word1}</span>
-                      <span className="text-slate-500 mx-1">+</span>
+                      <span className="text-neutral-500 mr-2">{idx + 1}.</span>
+                      <span className="text-neutral-400">{b.word1}</span>
+                      <span className="text-neutral-500 mx-1">+</span>
                       <span className="text-purple-400">{b.word2}</span>
                     </span>
-                    <span className="text-sm font-medium text-slate-300">{b.count}x</span>
+                    <span className="text-sm font-medium text-neutral-300">{b.count}x</span>
                   </div>
                 ))}
               </div>
@@ -9220,7 +9347,7 @@ export default function TextAnalysisApp() {
         
         {/* Word Tree Tab - Árvore de Palavras */}
         {activeTab === 'wordtree' && analysisResults && (
-          <div className={`rounded-2xl p-6 border ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200'}`}>
+          <div className={`rounded-2xl p-6 border ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
             <VisualizationHeader vizKey="wordtree" icon={GitBranch} extraContent={
               wordTreeData && (
                 <ExportVisualizationButton
@@ -9243,13 +9370,13 @@ export default function TextAnalysisApp() {
                   onChange={(e) => setWordTreeKeyword(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && buildWordTreeFromKeyword()}
                   placeholder="Digite a palavra central (ex: comunicação)"
-                  className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500"
+                  className="w-full px-4 py-3 bg-neutral-700/50 border border-neutral-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-neutral-500"
                 />
               </div>
               <button
                 onClick={() => buildWordTreeFromKeyword()}
                 disabled={!wordTreeKeyword.trim()}
-                className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-medium hover:shadow-lg hover:shadow-cyan-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-3 bg-neutral-700 rounded-xl font-medium hover:shadow-lg hover:shadow-neutral-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Gerar Árvore
               </button>
@@ -9258,7 +9385,7 @@ export default function TextAnalysisApp() {
             {/* Navegação entre palavras frequentes */}
             {analysisResults.wordFrequency && analysisResults.wordFrequency.length > 0 && (
               <div className="mb-4 flex items-center gap-3">
-                <span className="text-xs text-slate-500 uppercase tracking-wider">Navegar:</span>
+                <span className="text-xs text-neutral-500 uppercase tracking-wider">Navegar:</span>
                 <button
                   onClick={() => {
                     const freqs = analysisResults.wordFrequency;
@@ -9270,23 +9397,23 @@ export default function TextAnalysisApp() {
                     const tree = buildWordTree(analysisResults.fullText, w, 30, 5, cleaningOptions.minLength);
                     setWordTreeData(tree);
                   }}
-                  className="p-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white transition-colors"
+                  className="p-1.5 rounded-lg bg-neutral-700 hover:bg-neutral-600 text-neutral-300 hover:text-white transition-colors"
                   title="Palavra anterior"
                 >
                   <ChevronLeft size={16} />
                 </button>
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-700/50 rounded-lg min-w-[200px] justify-center">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-neutral-700/50 rounded-lg min-w-[200px] justify-center">
                   {wordTreeNavIndex >= 0 ? (
                     <>
-                      <span className="text-cyan-400 font-bold text-sm">
+                      <span className="text-neutral-400 font-bold text-sm">
                         {analysisResults.wordFrequency[wordTreeNavIndex]?.word}
                       </span>
-                      <span className="text-slate-500 text-xs">
+                      <span className="text-neutral-500 text-xs">
                         ({analysisResults.wordFrequency[wordTreeNavIndex]?.count}×) — #{wordTreeNavIndex + 1} de {Math.min(analysisResults.wordFrequency.length, 50)}
                       </span>
                     </>
                   ) : (
-                    <span className="text-slate-500 text-sm">Clique ◀ ▶ para navegar</span>
+                    <span className="text-neutral-500 text-sm">Clique ◀ ▶ para navegar</span>
                   )}
                 </div>
                 <button
@@ -9301,7 +9428,7 @@ export default function TextAnalysisApp() {
                     const tree = buildWordTree(analysisResults.fullText, w, 30, 5, cleaningOptions.minLength);
                     setWordTreeData(tree);
                   }}
-                  className="p-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white transition-colors"
+                  className="p-1.5 rounded-lg bg-neutral-700 hover:bg-neutral-600 text-neutral-300 hover:text-white transition-colors"
                   title="Próxima palavra"
                 >
                   <ChevronRight size={16} />
@@ -9312,7 +9439,7 @@ export default function TextAnalysisApp() {
             {/* Palavras excluídas */}
             {wordTreeExcluded.size > 0 && (
               <div className="mb-4 flex flex-wrap items-center gap-2">
-                <span className="text-xs text-slate-500 uppercase tracking-wider">Excluídas:</span>
+                <span className="text-xs text-neutral-500 uppercase tracking-wider">Excluídas:</span>
                 {Array.from(wordTreeExcluded).map(word => (
                   <span
                     key={word}
@@ -9338,7 +9465,7 @@ export default function TextAnalysisApp() {
                     setWordTreeExcluded(new Set());
                     buildWordTreeFromKeyword(null, new Set());
                   }}
-                  className="text-xs text-slate-500 hover:text-cyan-400 transition-colors underline ml-2"
+                  className="text-xs text-neutral-500 hover:text-neutral-400 transition-colors underline ml-2"
                 >
                   Limpar todas
                 </button>
@@ -9348,7 +9475,7 @@ export default function TextAnalysisApp() {
             {/* Sugestões de palavras frequentes */}
             {!wordTreeData && analysisResults.wordFrequency && (
               <div className="mb-6">
-                <p className="text-sm text-slate-400 mb-2">Sugestões (palavras mais frequentes):</p>
+                <p className="text-sm text-neutral-400 mb-2">Sugestões (palavras mais frequentes):</p>
                 <div className="flex flex-wrap gap-2">
                   {analysisResults.wordFrequency.slice(0, 15).map((w, i) => (
                     <button
@@ -9360,9 +9487,9 @@ export default function TextAnalysisApp() {
                         const tree = buildWordTree(analysisResults.fullText, w.word, 30, 5, cleaningOptions.minLength);
                         setWordTreeData(tree);
                       }}
-                      className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded-full text-sm transition-colors"
+                      className="px-3 py-1 bg-neutral-700 hover:bg-neutral-600 rounded-full text-sm transition-colors"
                     >
-                      {w.word} <span className="text-slate-400">({w.count})</span>
+                      {w.word} <span className="text-neutral-400">({w.count})</span>
                     </button>
                   ))}
                 </div>
@@ -9370,7 +9497,7 @@ export default function TextAnalysisApp() {
             )}
 
             {/* Visualização */}
-            <div data-viz="wordtree" className="bg-slate-900/50 rounded-xl p-4 overflow-x-auto">
+            <div data-viz="wordtree" className="bg-neutral-900/50 rounded-xl p-4 overflow-x-auto">
               <WordTreeVisualization
                 wordTree={wordTreeData}
                 width={900}
@@ -9386,9 +9513,9 @@ export default function TextAnalysisApp() {
             </div>
 
             {wordTreeData && (
-              <div className="mt-4 text-sm text-slate-400">
+              <div className="mt-4 text-sm text-neutral-400">
                 Total de ocorrências encontradas: <span className="text-white font-medium">{wordTreeData.totalOccurrences || 0}</span>
-                {' • '}Contextos à esquerda: <span className="text-cyan-400">{wordTreeData.left?.length || 0}</span>
+                {' • '}Contextos à esquerda: <span className="text-neutral-400">{wordTreeData.left?.length || 0}</span>
                 {' • '}Contextos à direita: <span className="text-purple-400">{wordTreeData.right?.length || 0}</span>
                 {wordTreeExcluded.size > 0 && (
                   <span> • Palavras excluídas: <span className="text-red-400">{wordTreeExcluded.size}</span></span>
@@ -9400,7 +9527,7 @@ export default function TextAnalysisApp() {
         
         {/* Sentiment Tab - Análise de Sentimentos */}
         {activeTab === 'sentiment' && sentimentAnalysis && (
-          <div className={`rounded-2xl p-6 border ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200'}`}>
+          <div className={`rounded-2xl p-6 border ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
             <VisualizationHeader vizKey="sentiment" icon={PieChart} extraContent={
               <ExportVisualizationButton 
                 vizId="sentiment" 
@@ -9420,7 +9547,7 @@ export default function TextAnalysisApp() {
         
         {/* Heatmap Tab */}
         {activeTab === 'heatmap' && analysisResults && analysisResults.cooccurrences && analysisResults.wordFrequency && (
-          <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200'}`}>
+          <div className={`rounded-2xl p-8 border ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
             <VisualizationHeader vizKey="heatmap" icon={Grid} extraContent={
               <ExportVisualizationButton 
                 vizId="heatmap" 
@@ -9432,7 +9559,7 @@ export default function TextAnalysisApp() {
                 }))}
               />
             } />
-            <div data-viz="heatmap" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-slate-900/50' : 'bg-slate-50'}`}>
+            <div data-viz="heatmap" className={`flex justify-center overflow-hidden rounded-xl p-4 ${isDarkMode ? 'bg-neutral-900/50' : 'bg-neutral-50'}`}>
               <HeatmapVisualization 
                 cooccurrences={analysisResults.cooccurrences} 
                 words={analysisResults.wordFrequency}
@@ -9449,39 +9576,39 @@ export default function TextAnalysisApp() {
             {/* Configurações de Rede */}
             <div className={`${theme.card} rounded-2xl p-6 border ${theme.cardBorder}`}>
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Settings className="w-5 h-5 text-cyan-400" />
+                <Settings className="w-5 h-5 text-neutral-400" />
                 Parâmetros da Rede
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <label className="text-sm text-slate-400 block mb-1">Peso mínimo</label>
+                  <label className="text-sm text-neutral-400 block mb-1">Peso mínimo</label>
                   <input
                     type="number"
                     value={networkSettings.minWeight}
                     onChange={(e) => setNetworkSettings(prev => ({ ...prev, minWeight: parseInt(e.target.value) || 2 }))}
-                    className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm"
+                    className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-sm"
                     min="1"
                     max="20"
                   />
                 </div>
                 <div>
-                  <label className="text-sm text-slate-400 block mb-1">Máx. arestas</label>
+                  <label className="text-sm text-neutral-400 block mb-1">Máx. arestas</label>
                   <input
                     type="number"
                     value={networkSettings.maxEdges}
                     onChange={(e) => setNetworkSettings(prev => ({ ...prev, maxEdges: parseInt(e.target.value) || 150 }))}
-                    className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm"
+                    className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-sm"
                     min="50"
                     max="500"
                   />
                 </div>
                 <div>
-                  <label className="text-sm text-slate-400 block mb-1">Janela (palavras)</label>
+                  <label className="text-sm text-neutral-400 block mb-1">Janela (palavras)</label>
                   <input
                     type="number"
                     value={networkSettings.windowSize}
                     onChange={(e) => setNetworkSettings(prev => ({ ...prev, windowSize: parseInt(e.target.value) || 5 }))}
-                    className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm"
+                    className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-sm"
                     min="2"
                     max="15"
                   />
@@ -9489,7 +9616,7 @@ export default function TextAnalysisApp() {
                 <div className="flex items-end">
                   <button
                     onClick={processCorpus}
-                    className="w-full px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-sm transition-colors"
+                    className="w-full px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-sm transition-colors"
                   >
                     Recalcular
                   </button>
@@ -9500,7 +9627,7 @@ export default function TextAnalysisApp() {
             {/* Métricas de Centralidade */}
             <div className={`${theme.card} rounded-2xl p-6 border ${theme.cardBorder}`}>
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <GitBranch className="w-5 h-5 text-cyan-400" />
+                <GitBranch className="w-5 h-5 text-neutral-400" />
                 Métricas de Centralidade
               </h3>
               <CentralityMetricsPanel 
@@ -9536,7 +9663,7 @@ export default function TextAnalysisApp() {
         {activeTab === 'tfidf' && statisticalAnalysis && (
           <div className={`${theme.card} rounded-2xl p-6 border ${theme.cardBorder}`}>
             <h3 className="font-semibold mb-6 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-cyan-400" />
+              <TrendingUp className="w-5 h-5 text-neutral-400" />
               Análise TF-IDF (Term Frequency - Inverse Document Frequency)
             </h3>
             <p className={`text-sm ${theme.muted} mb-6`}>
@@ -9575,7 +9702,7 @@ export default function TextAnalysisApp() {
           <div className={`${theme.card} rounded-2xl p-8 border ${theme.cardBorder}`}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-semibold flex items-center gap-2">
-                <Layers className="w-5 h-5 text-cyan-400" />
+                <Layers className="w-5 h-5 text-neutral-400" />
                 Classificação Hierárquica Descendente (CHD/Reinert)
               </h3>
               <ExportVisualizationButton 
@@ -9592,10 +9719,10 @@ export default function TextAnalysisApp() {
                 ) || []}
               />
             </div>
-            <div data-viz="chd" className="bg-slate-900/50 rounded-xl p-4">
+            <div data-viz="chd" className="bg-neutral-900/50 rounded-xl p-4">
               <ClusterVisualization chdResult={analysisResults.chdResult} />
             </div>
-            <p className="text-sm text-slate-400 mt-6">
+            <p className="text-sm text-neutral-400 mt-6">
               Segmentos de texto agrupados por similaridade lexical. Clique nas classes para ver detalhes.
             </p>
           </div>
@@ -9608,7 +9735,7 @@ export default function TextAnalysisApp() {
             <div className={`${theme.card} rounded-2xl p-6 border ${theme.cardBorder}`}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold flex items-center gap-2">
-                  <Tag className="w-5 h-5 text-cyan-400" />
+                  <Tag className="w-5 h-5 text-neutral-400" />
                   Codificação Qualitativa
                 </h3>
                 <div className="flex items-center gap-3">
@@ -9646,14 +9773,14 @@ export default function TextAnalysisApp() {
                       </button>
                       
                       {showExportDropdown && (
-                        <div className={`absolute right-0 top-full mt-2 w-56 ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'} border rounded-xl shadow-xl z-50 overflow-hidden`}>
-                          <div className={`px-3 py-2 ${isDarkMode ? 'bg-slate-700/50' : 'bg-slate-50'} border-b ${theme.divider}`}>
+                        <div className={`absolute right-0 top-full mt-2 w-56 ${isDarkMode ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border rounded-xl shadow-xl z-50 overflow-hidden`}>
+                          <div className={`px-3 py-2 ${isDarkMode ? 'bg-neutral-700/50' : 'bg-neutral-50'} border-b ${theme.divider}`}>
                             <span className={`text-xs font-medium ${theme.textMuted}`}>Formatos de Exportação</span>
                           </div>
                           <div className="py-1">
                             <button
                               onClick={() => { exportCodingData(); setShowExportDropdown(false); }}
-                              className={`w-full px-4 py-2.5 text-left text-sm ${isDarkMode ? 'hover:bg-slate-700' : 'hover:bg-slate-50'} flex items-center gap-3 transition-colors`}
+                              className={`w-full px-4 py-2.5 text-left text-sm ${isDarkMode ? 'hover:bg-neutral-700' : 'hover:bg-neutral-50'} flex items-center gap-3 transition-colors`}
                             >
                               <span className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
                                 <FileText className="w-4 h-4 text-green-400" />
@@ -9665,7 +9792,7 @@ export default function TextAnalysisApp() {
                             </button>
                             <button
                               onClick={() => { exportCodingXLSX(); setShowExportDropdown(false); }}
-                              className={`w-full px-4 py-2.5 text-left text-sm ${isDarkMode ? 'hover:bg-slate-700' : 'hover:bg-slate-50'} flex items-center gap-3 transition-colors`}
+                              className={`w-full px-4 py-2.5 text-left text-sm ${isDarkMode ? 'hover:bg-neutral-700' : 'hover:bg-neutral-50'} flex items-center gap-3 transition-colors`}
                             >
                               <span className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
                                 <FileSpreadsheet className="w-4 h-4 text-emerald-400" />
@@ -9677,7 +9804,7 @@ export default function TextAnalysisApp() {
                             </button>
                             <button
                               onClick={() => { exportCodingJSON(); setShowExportDropdown(false); }}
-                              className={`w-full px-4 py-2.5 text-left text-sm ${isDarkMode ? 'hover:bg-slate-700' : 'hover:bg-slate-50'} flex items-center gap-3 transition-colors`}
+                              className={`w-full px-4 py-2.5 text-left text-sm ${isDarkMode ? 'hover:bg-neutral-700' : 'hover:bg-neutral-50'} flex items-center gap-3 transition-colors`}
                             >
                               <span className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
                                 <Code className="w-4 h-4 text-purple-400" />
@@ -9689,10 +9816,10 @@ export default function TextAnalysisApp() {
                             </button>
                             <button
                               onClick={() => { exportCodingTXT(); setShowExportDropdown(false); }}
-                              className={`w-full px-4 py-2.5 text-left text-sm ${isDarkMode ? 'hover:bg-slate-700' : 'hover:bg-slate-50'} flex items-center gap-3 transition-colors`}
+                              className={`w-full px-4 py-2.5 text-left text-sm ${isDarkMode ? 'hover:bg-neutral-700' : 'hover:bg-neutral-50'} flex items-center gap-3 transition-colors`}
                             >
-                              <span className="w-8 h-8 rounded-lg bg-slate-500/20 flex items-center justify-center">
-                                <AlignLeft className="w-4 h-4 text-slate-400" />
+                              <span className="w-8 h-8 rounded-lg bg-neutral-500/20 flex items-center justify-center">
+                                <AlignLeft className="w-4 h-4 text-neutral-400" />
                               </span>
                               <div>
                                 <div className="font-medium">Texto (.txt)</div>
@@ -9701,14 +9828,38 @@ export default function TextAnalysisApp() {
                             </button>
                             <button
                               onClick={() => { exportCodingMarkdown(); setShowExportDropdown(false); }}
-                              className={`w-full px-4 py-2.5 text-left text-sm ${isDarkMode ? 'hover:bg-slate-700' : 'hover:bg-slate-50'} flex items-center gap-3 transition-colors`}
+                              className={`w-full px-4 py-2.5 text-left text-sm ${isDarkMode ? 'hover:bg-neutral-700' : 'hover:bg-neutral-50'} flex items-center gap-3 transition-colors`}
                             >
-                              <span className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
-                                <Hash className="w-4 h-4 text-cyan-400" />
+                              <span className="w-8 h-8 rounded-lg bg-neutral-500/20 flex items-center justify-center">
+                                <Hash className="w-4 h-4 text-neutral-400" />
                               </span>
                               <div>
                                 <div className="font-medium">Markdown (.md)</div>
                                 <div className={`text-xs ${theme.textMuted}`}>Notion, Obsidian, GitHub</div>
+                              </div>
+                            </button>
+                            <button
+                              onClick={() => { exportCodingPDF(); setShowExportDropdown(false); }}
+                              className={`w-full px-4 py-2.5 text-left text-sm ${isDarkMode ? 'hover:bg-neutral-700' : 'hover:bg-neutral-50'} flex items-center gap-3 transition-colors`}
+                            >
+                              <span className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
+                                <FileText className="w-4 h-4 text-red-400" />
+                              </span>
+                              <div>
+                                <div className="font-medium">PDF</div>
+                                <div className={`text-xs ${theme.textMuted}`}>Relatório para impressão</div>
+                              </div>
+                            </button>
+                            <button
+                              onClick={() => { exportCodingDOCX(); setShowExportDropdown(false); }}
+                              className={`w-full px-4 py-2.5 text-left text-sm ${isDarkMode ? 'hover:bg-neutral-700' : 'hover:bg-neutral-50'} flex items-center gap-3 transition-colors`}
+                            >
+                              <span className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                                <FileText className="w-4 h-4 text-blue-400" />
+                              </span>
+                              <div>
+                                <div className="font-medium">Word (.doc)</div>
+                                <div className={`text-xs ${theme.textMuted}`}>Documento editável</div>
                               </div>
                             </button>
                           </div>
@@ -9725,8 +9876,8 @@ export default function TextAnalysisApp() {
               
               {/* Estatísticas de códigos */}
               {(customCodes || []).length > 0 && (
-                <div className="mt-4 pt-4 border-t border-slate-700">
-                  <p className="text-xs text-slate-500 mb-2">Códigos customizados criados:</p>
+                <div className="mt-4 pt-4 border-t border-neutral-700">
+                  <p className="text-xs text-neutral-500 mb-2">Códigos customizados criados:</p>
                   <div className="flex flex-wrap gap-2">
                     {(customCodes || []).map(code => (
                       <span
@@ -9745,8 +9896,8 @@ export default function TextAnalysisApp() {
             
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Livro de Códigos */}
-              <div className="lg:col-span-1 bg-slate-800/50 rounded-2xl p-4 border border-slate-700 max-h-[70vh] overflow-y-auto">
-                <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider text-slate-400">
+              <div className="lg:col-span-1 bg-neutral-800/50 rounded-2xl p-4 border border-neutral-700 max-h-[70vh] overflow-y-auto">
+                <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider text-neutral-400">
                   Livro de Códigos
                 </h4>
                 <div className="space-y-2">
@@ -9754,14 +9905,14 @@ export default function TextAnalysisApp() {
                     <div key={catId} className="rounded-lg overflow-hidden">
                       <button
                         onClick={() => toggleCategory(catId)}
-                        className="w-full flex items-center justify-between p-3 hover:bg-slate-700/50 transition-colors"
+                        className="w-full flex items-center justify-between p-3 hover:bg-neutral-700/50 transition-colors"
                         style={{ borderLeft: `3px solid ${category.color}` }}
                       >
                         <span className="font-medium text-sm" style={{ color: category.color }}>
                           {catId}. {category.name}
                         </span>
                         <ChevronDown 
-                          className={`w-4 h-4 text-slate-400 transition-transform ${expandedCategories.includes(catId) ? 'rotate-180' : ''}`} 
+                          className={`w-4 h-4 text-neutral-400 transition-transform ${expandedCategories.includes(catId) ? 'rotate-180' : ''}`} 
                         />
                       </button>
                       {expandedCategories.includes(catId) && (
@@ -9773,15 +9924,15 @@ export default function TextAnalysisApp() {
                             return (
                               <div
                                 key={codeId}
-                                className="flex items-center justify-between py-1.5 px-2 text-sm rounded hover:bg-slate-700/30 group"
+                                className="flex items-center justify-between py-1.5 px-2 text-sm rounded hover:bg-neutral-700/30 group"
                               >
                                 <div className="flex-1">
-                                  <span className="text-slate-300">
-                                    <span className="text-slate-500 mr-2">{codeId}</span>
+                                  <span className="text-neutral-300">
+                                    <span className="text-neutral-500 mr-2">{codeId}</span>
                                     {codeName}
                                   </span>
                                   {codeKeywords.length > 0 && (
-                                    <p className="text-xs text-slate-600 mt-0.5 truncate max-w-[200px] opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <p className="text-xs text-neutral-600 mt-0.5 truncate max-w-[200px] opacity-0 group-hover:opacity-100 transition-opacity">
                                       {codeKeywords.slice(0, 3).join(', ')}...
                                     </p>
                                   )}
@@ -9804,7 +9955,7 @@ export default function TextAnalysisApp() {
                   
                   {/* Códigos Customizados */}
                   {customCodes.length > 0 && (
-                    <div className="rounded-lg overflow-hidden mt-4 pt-4 border-t border-slate-700">
+                    <div className="rounded-lg overflow-hidden mt-4 pt-4 border-t border-neutral-700">
                       <div className="p-3" style={{ borderLeft: '3px solid #a855f7' }}>
                         <span className="font-medium text-sm text-purple-400">
                           Códigos Customizados ({(customCodes || []).length})
@@ -9816,11 +9967,11 @@ export default function TextAnalysisApp() {
                           return (
                             <div
                               key={code.id}
-                              className="flex items-center justify-between py-1.5 px-2 text-sm rounded hover:bg-slate-700/30"
+                              className="flex items-center justify-between py-1.5 px-2 text-sm rounded hover:bg-neutral-700/30"
                             >
                               <div className="flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full" style={{ backgroundColor: code.color }} />
-                                <span className="text-slate-300">{code.name}</span>
+                                <span className="text-neutral-300">{code.name}</span>
                               </div>
                               {codeCount > 0 && (
                                 <span 
@@ -9842,20 +9993,20 @@ export default function TextAnalysisApp() {
               {/* Documentos para codificar com highlights */}
               <div className="lg:col-span-2 space-y-4">
                 {documents.length === 0 ? (
-                  <div className={`rounded-2xl p-12 border text-center ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200'}`}>
-                    <FileText className={`w-12 h-12 mx-auto mb-4 ${isDarkMode ? 'text-slate-600' : 'text-slate-400'}`} />
+                  <div className={`rounded-2xl p-12 border text-center ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
+                    <FileText className={`w-12 h-12 mx-auto mb-4 ${isDarkMode ? 'text-neutral-600' : 'text-neutral-400'}`} />
                     <p className={theme.muted}>Importe documentos na aba "Importar" para começar a codificar</p>
                   </div>
                 ) : (
                   documents.map(doc => (
-                    <div key={doc.id} className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200'}`}>
-                      <div className={`p-4 border-b flex items-center justify-between ${isDarkMode ? 'border-slate-700' : 'border-slate-200'}`}>
+                    <div key={doc.id} className={`rounded-2xl border overflow-hidden ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
+                      <div className={`p-4 border-b flex items-center justify-between ${isDarkMode ? 'border-neutral-700' : 'border-neutral-200'}`}>
                         <div className="flex items-center gap-3">
-                          <FileText className={`w-5 h-5 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`} />
+                          <FileText className={`w-5 h-5 ${isDarkMode ? 'text-neutral-400' : 'text-neutral-500'}`} />
                           <span className="font-medium">{doc.name}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className={`text-xs ${isDarkMode ? 'text-slate-500' : 'text-slate-600'}`}>
+                          <span className={`text-xs ${isDarkMode ? 'text-neutral-500' : 'text-neutral-600'}`}>
                             {codedSegments.filter(seg => seg.documentId === doc.id).length} segmentos
                           </span>
                           <span className="text-xs px-2 py-0.5 rounded bg-green-500/20 text-green-400">
@@ -9864,7 +10015,7 @@ export default function TextAnalysisApp() {
                           {editingDocument !== doc.id && (
                             <button
                               onClick={() => startEditingDocument(doc)}
-                              className={`p-1.5 rounded transition-colors ${isDarkMode ? 'hover:bg-slate-700 text-slate-400 hover:text-cyan-400' : 'hover:bg-slate-100 text-slate-500 hover:text-cyan-600'}`}
+                              className={`p-1.5 rounded transition-colors ${isDarkMode ? 'hover:bg-neutral-700 text-neutral-400 hover:text-neutral-400' : 'hover:bg-neutral-100 text-neutral-500 hover:text-neutral-600'}`}
                               title="Editar documento"
                             >
                               <Edit2 className="w-4 h-4" />
@@ -9878,20 +10029,20 @@ export default function TextAnalysisApp() {
                             <textarea
                               value={editingDocumentContent}
                               onChange={(e) => setEditingDocumentContent(e.target.value)}
-                              className={`w-full p-3 rounded-lg text-sm border resize-none min-h-[200px] ${isDarkMode ? 'bg-slate-900 border-slate-600 text-white' : 'bg-white border-slate-300 text-slate-900'} focus:outline-none focus:border-cyan-500`}
+                              className={`w-full p-3 rounded-lg text-sm border resize-none min-h-[200px] ${isDarkMode ? 'bg-neutral-900 border-neutral-600 text-white' : 'bg-white border-neutral-300 text-neutral-900'} focus:outline-none focus:border-neutral-500`}
                               rows={10}
                             />
                             <div className="flex gap-2">
                               <button
                                 onClick={() => updateDocumentContent(doc.id, editingDocumentContent)}
-                                className="px-4 py-2 bg-cyan-600 text-white rounded-lg text-sm hover:bg-cyan-500 transition-colors flex items-center gap-2"
+                                className="px-4 py-2 bg-neutral-100 text-neutral-950 rounded-lg text-sm hover:bg-neutral-500 transition-colors flex items-center gap-2"
                               >
                                 <Check className="w-4 h-4" />
                                 Salvar Alterações
                               </button>
                               <button
                                 onClick={cancelEditingDocument}
-                                className={`px-4 py-2 rounded-lg text-sm transition-colors ${isDarkMode ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}`}
+                                className={`px-4 py-2 rounded-lg text-sm transition-colors ${isDarkMode ? 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600' : 'bg-neutral-200 text-neutral-700 hover:bg-neutral-300'}`}
                               >
                                 Cancelar
                               </button>
@@ -9927,19 +10078,19 @@ export default function TextAnalysisApp() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => setCodingFilter('all')}
-                      className={`px-3 py-1 rounded-lg text-xs transition-colors ${codingFilter === 'all' ? 'bg-slate-600 text-white' : 'text-slate-400 hover:bg-slate-700'}`}
+                      className={`px-3 py-1 rounded-lg text-xs transition-colors ${codingFilter === 'all' ? 'bg-neutral-600 text-white' : 'text-neutral-400 hover:bg-neutral-700'}`}
                     >
                       Todos
                     </button>
                     <button
                       onClick={() => setCodingFilter('auto')}
-                      className={`px-3 py-1 rounded-lg text-xs transition-colors ${codingFilter === 'auto' ? 'bg-green-600 text-white' : 'text-slate-400 hover:bg-slate-700'}`}
+                      className={`px-3 py-1 rounded-lg text-xs transition-colors ${codingFilter === 'auto' ? 'bg-green-600 text-white' : 'text-neutral-400 hover:bg-neutral-700'}`}
                     >
                       Automáticos
                     </button>
                     <button
                       onClick={() => setCodingFilter('manual')}
-                      className={`px-3 py-1 rounded-lg text-xs transition-colors ${codingFilter === 'manual' ? 'bg-cyan-600 text-white' : 'text-slate-400 hover:bg-slate-700'}`}
+                      className={`px-3 py-1 rounded-lg text-xs transition-colors ${codingFilter === 'manual' ? 'bg-neutral-100 text-neutral-950' : 'text-neutral-400 hover:bg-neutral-700'}`}
                     >
                       Manuais
                     </button>
@@ -9953,11 +10104,11 @@ export default function TextAnalysisApp() {
                       return true;
                     })
                     .map((segment, idx) => (
-                    <div key={segment.id} className={`rounded-xl p-4 border ${isDarkMode ? 'bg-slate-900/50 border-slate-600' : 'bg-white border-slate-200'}`}>
+                    <div key={segment.id} className={`rounded-xl p-4 border ${isDarkMode ? 'bg-neutral-900/50 border-neutral-600' : 'bg-white border-neutral-200'}`}>
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`text-xs font-mono px-2 py-1 rounded ${isDarkMode ? 'bg-slate-700' : 'bg-slate-100'}`}>#{idx + 1}</span>
-                          <span className={`text-xs ${isDarkMode ? 'text-slate-500' : 'text-slate-600'}`}>{segment.documentName}</span>
+                          <span className={`text-xs font-mono px-2 py-1 rounded ${isDarkMode ? 'bg-neutral-700' : 'bg-neutral-100'}`}>#{idx + 1}</span>
+                          <span className={`text-xs ${isDarkMode ? 'text-neutral-500' : 'text-neutral-600'}`}>{segment.documentName}</span>
                           {segment.isAutomatic && (
                             <span className="text-xs px-2 py-0.5 rounded bg-green-500/20 text-green-400 flex items-center gap-1">
                               <Zap className="w-3 h-3" />
@@ -9965,7 +10116,7 @@ export default function TextAnalysisApp() {
                             </span>
                           )}
                           {segment.confidence && (
-                            <span className={`text-xs ${isDarkMode ? 'text-slate-600' : 'text-slate-500'}`}>
+                            <span className={`text-xs ${isDarkMode ? 'text-neutral-600' : 'text-neutral-500'}`}>
                               {Math.round(segment.confidence * 100)}% conf
                             </span>
                           )}
@@ -9974,7 +10125,7 @@ export default function TextAnalysisApp() {
                           {editingSegment !== segment.id && (
                             <button
                               onClick={() => startEditingSegment(segment)}
-                              className={`p-1.5 rounded transition-colors ${isDarkMode ? 'hover:bg-slate-700 text-slate-400 hover:text-cyan-400' : 'hover:bg-slate-100 text-slate-500 hover:text-cyan-600'}`}
+                              className={`p-1.5 rounded transition-colors ${isDarkMode ? 'hover:bg-neutral-700 text-neutral-400 hover:text-neutral-400' : 'hover:bg-neutral-100 text-neutral-500 hover:text-neutral-600'}`}
                               title="Editar texto"
                             >
                               <Edit2 className="w-4 h-4" />
@@ -9996,28 +10147,28 @@ export default function TextAnalysisApp() {
                           <textarea
                             value={editingSegmentText}
                             onChange={(e) => setEditingSegmentText(e.target.value)}
-                            className={`w-full p-3 rounded-lg text-sm border resize-none ${isDarkMode ? 'bg-slate-800 border-slate-600 text-white' : 'bg-white border-slate-300 text-slate-900'} focus:outline-none focus:border-cyan-500`}
+                            className={`w-full p-3 rounded-lg text-sm border resize-none ${isDarkMode ? 'bg-neutral-800 border-neutral-600 text-white' : 'bg-white border-neutral-300 text-neutral-900'} focus:outline-none focus:border-neutral-500`}
                             rows={4}
                             autoFocus
                           />
                           <div className="flex gap-2 mt-2">
                             <button
                               onClick={() => updateSegmentText(segment.id, editingSegmentText)}
-                              className="px-3 py-1.5 bg-cyan-600 text-white rounded-lg text-sm hover:bg-cyan-500 transition-colors flex items-center gap-1"
+                              className="px-3 py-1.5 bg-neutral-100 text-neutral-950 rounded-lg text-sm hover:bg-neutral-500 transition-colors flex items-center gap-1"
                             >
                               <Check className="w-3 h-3" />
                               Salvar
                             </button>
                             <button
                               onClick={cancelEditingSegment}
-                              className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${isDarkMode ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}`}
+                              className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${isDarkMode ? 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600' : 'bg-neutral-200 text-neutral-700 hover:bg-neutral-300'}`}
                             >
                               Cancelar
                             </button>
                           </div>
                         </div>
                       ) : (
-                        <p className={`text-sm mb-3 italic border-l-2 pl-3 ${isDarkMode ? 'text-slate-300 border-slate-600' : 'text-slate-700 border-slate-300'}`}>
+                        <p className={`text-sm mb-3 italic border-l-2 pl-3 ${isDarkMode ? 'text-neutral-300 border-neutral-600' : 'text-neutral-700 border-neutral-300'}`}>
                           "{(segment.text || '').slice(0, 200)}{(segment.text?.length || 0) > 200 ? '...' : ''}"
                         </p>
                       )}
@@ -10070,7 +10221,7 @@ export default function TextAnalysisApp() {
                             setAddingCodeToSegment(segment.id);
                             setCodeSearchTerm('');
                           }}
-                          className={`text-xs px-2 py-1 rounded-full flex items-center gap-1 border-2 border-dashed transition-colors ${isDarkMode ? 'border-slate-600 text-slate-400 hover:border-cyan-500 hover:text-cyan-400' : 'border-slate-400 text-slate-500 hover:border-cyan-500 hover:text-cyan-600'}`}
+                          className={`text-xs px-2 py-1 rounded-full flex items-center gap-1 border-2 border-dashed transition-colors ${isDarkMode ? 'border-neutral-600 text-neutral-400 hover:border-neutral-500 hover:text-neutral-400' : 'border-neutral-400 text-neutral-500 hover:border-neutral-500 hover:text-neutral-600'}`}
                           title="Adicionar código"
                         >
                           <Plus className="w-3 h-3" />
@@ -10079,7 +10230,7 @@ export default function TextAnalysisApp() {
                       </div>
                       {/* Mostrar keywords que deram match */}
                       {segment.matches && segment.matches.length > 0 && (
-                        <div className={`text-xs mt-2 ${isDarkMode ? 'text-slate-500' : 'text-slate-600'}`}>
+                        <div className={`text-xs mt-2 ${isDarkMode ? 'text-neutral-500' : 'text-neutral-600'}`}>
                           <strong>Keywords:</strong> {segment.matches.map(m => m.keyword).join(', ')}
                         </div>
                       )}
@@ -10113,12 +10264,12 @@ export default function TextAnalysisApp() {
                   onClick={() => setAddingCodeToSegment(null)}
                 />
                 <div 
-                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 border-2 border-cyan-500 rounded-2xl shadow-2xl p-5 w-[360px] max-h-[80vh] flex flex-col"
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral-900 border-2 border-neutral-500 rounded-2xl shadow-2xl p-5 w-[360px] max-h-[80vh] flex flex-col"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-700">
+                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-neutral-700">
                     <div className="flex items-center gap-2">
-                      <Plus className="w-5 h-5 text-cyan-400" />
+                      <Plus className="w-5 h-5 text-neutral-400" />
                       <span className="text-lg font-semibold text-white">Adicionar Código</span>
                     </div>
                     <button 
@@ -10130,13 +10281,13 @@ export default function TextAnalysisApp() {
                   </div>
                   
                   <div className="relative mb-4">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
                     <input
                       type="text"
                       value={codeSearchTerm}
                       onChange={(e) => setCodeSearchTerm(e.target.value)}
                       placeholder="Buscar código..."
-                      className="w-full pl-12 pr-4 py-3 bg-slate-800 border-2 border-slate-600 rounded-xl text-base focus:outline-none focus:border-cyan-500 text-white placeholder-slate-500"
+                      className="w-full pl-12 pr-4 py-3 bg-neutral-800 border-2 border-neutral-600 rounded-xl text-base focus:outline-none focus:border-neutral-500 text-white placeholder-slate-500"
                       autoFocus
                     />
                   </div>
@@ -10150,7 +10301,7 @@ export default function TextAnalysisApp() {
                           key={code.id}
                           onClick={() => !alreadyHasCode && addCodeToExistingSegment(addingCodeToSegment, code)}
                           disabled={alreadyHasCode}
-                          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left border-2 ${alreadyHasCode ? 'opacity-50 cursor-not-allowed border-transparent bg-slate-800/50' : 'border-transparent hover:border-cyan-500/50 hover:bg-slate-700/80'}`}
+                          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left border-2 ${alreadyHasCode ? 'opacity-50 cursor-not-allowed border-transparent bg-neutral-800/50' : 'border-transparent hover:border-neutral-500/50 hover:bg-neutral-700/80'}`}
                         >
                           <span 
                             className="w-5 h-5 rounded-full flex-shrink-0 ring-2 ring-white/30"
@@ -10158,12 +10309,12 @@ export default function TextAnalysisApp() {
                           />
                           <div className="flex-1 min-w-0">
                             <p className="text-base text-white truncate font-medium">{code.name}</p>
-                            <p className="text-sm text-slate-500 truncate">{code.categoryName}</p>
+                            <p className="text-sm text-neutral-500 truncate">{code.categoryName}</p>
                           </div>
                           {alreadyHasCode ? (
                             <Check className="w-5 h-5 text-green-400" />
                           ) : (
-                            <ChevronRight className="w-5 h-5 text-slate-600" />
+                            <ChevronRight className="w-5 h-5 text-neutral-600" />
                           )}
                         </button>
                       );
@@ -10192,7 +10343,7 @@ export default function TextAnalysisApp() {
                 }))}
               />
             </div>
-            <div data-viz="radar" className="flex justify-center overflow-hidden bg-slate-900/50 rounded-xl p-4">
+            <div data-viz="radar" className="flex justify-center overflow-hidden bg-neutral-900/50 rounded-xl p-4">
               <RadarVisualization 
                 codedSegments={codedSegments} 
                 codebook={capacityCodebook}
@@ -10200,7 +10351,7 @@ export default function TextAnalysisApp() {
                 height={500} 
               />
             </div>
-            <p className="text-sm text-slate-400 mt-4">
+            <p className="text-sm text-neutral-400 mt-4">
               Perfil de distribuição da codificação por categoria. Quanto maior a área, mais equilibrada a codificação.
             </p>
           </div>
@@ -10224,7 +10375,7 @@ export default function TextAnalysisApp() {
                 })))}
               />
             </div>
-            <div data-viz="sunburst" className="flex justify-center overflow-hidden bg-slate-900/50 rounded-xl p-4">
+            <div data-viz="sunburst" className="flex justify-center overflow-hidden bg-neutral-900/50 rounded-xl p-4">
               <SunburstVisualization 
                 codedSegments={codedSegments} 
                 codebook={capacityCodebook}
@@ -10232,7 +10383,7 @@ export default function TextAnalysisApp() {
                 height={500} 
               />
             </div>
-            <p className="text-sm text-slate-400 mt-4">
+            <p className="text-sm text-neutral-400 mt-4">
               Hierarquia de categorias e códigos. Anel interno = categorias, anel externo = códigos. Tamanho proporcional ao uso.
             </p>
           </div>
@@ -10243,7 +10394,7 @@ export default function TextAnalysisApp() {
           <div className="space-y-6">
             <div className={`${theme.card} rounded-2xl p-6 border ${theme.cardBorder}`}>
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Search className="w-5 h-5 text-cyan-400" />
+                <Search className="w-5 h-5 text-neutral-400" />
                 KWIC - Keyword in Context
               </h3>
               <div className="flex gap-3">
@@ -10253,11 +10404,11 @@ export default function TextAnalysisApp() {
                   onChange={(e) => setKwicKeyword(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && performKWICSearch()}
                   placeholder="Digite uma palavra-chave..."
-                  className="flex-1 px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl focus:border-cyan-500 focus:outline-none transition-colors"
+                  className="flex-1 px-4 py-3 bg-neutral-700 border border-neutral-600 rounded-xl focus:border-neutral-500 focus:outline-none transition-colors"
                 />
                 <button
                   onClick={performKWICSearch}
-                  className="px-6 py-3 bg-cyan-500 hover:bg-cyan-400 rounded-xl font-medium transition-colors"
+                  className="px-6 py-3 bg-neutral-500 hover:bg-neutral-400 rounded-xl font-medium transition-colors"
                 >
                   Buscar
                 </button>
@@ -10266,17 +10417,17 @@ export default function TextAnalysisApp() {
             
             {(kwicResults || []).length > 0 && (
               <div className={`${theme.card} rounded-2xl p-6 border ${theme.cardBorder}`}>
-                <h4 className="text-sm text-slate-400 mb-4">
+                <h4 className="text-sm text-neutral-400 mb-4">
                   {(kwicResults || []).length} ocorrências encontradas
                 </h4>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {(kwicResults || []).map((result, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-sm font-mono bg-slate-700/30 p-3 rounded-lg">
-                      <span className="text-right text-slate-400 flex-1 truncate">{result.left}</span>
-                      <span className="px-2 py-1 bg-cyan-500/20 text-cyan-300 rounded font-bold whitespace-nowrap">
+                    <div key={idx} className="flex items-center gap-2 text-sm font-mono bg-neutral-700/30 p-3 rounded-lg">
+                      <span className="text-right text-neutral-400 flex-1 truncate">{result.left}</span>
+                      <span className="px-2 py-1 bg-neutral-500/20 text-neutral-200 rounded font-bold whitespace-nowrap">
                         {result.keyword}
                       </span>
-                      <span className="text-left text-slate-400 flex-1 truncate">{result.right}</span>
+                      <span className="text-left text-neutral-400 flex-1 truncate">{result.right}</span>
                     </div>
                   ))}
                 </div>
@@ -10289,21 +10440,21 @@ export default function TextAnalysisApp() {
         {activeTab === 'export' && analysisResults && analysisResults.wordFrequency && (
           <div className="space-y-6">
             {/* Botão principal - Baixar Tudo */}
-            <div className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-2xl p-6 border border-cyan-500/30">
+            <div className="bg-neutral-800 rounded-2xl p-6 border border-neutral-500/30">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold flex items-center gap-2">
-                    <Download className="w-5 h-5 text-cyan-400" />
+                    <Download className="w-5 h-5 text-neutral-400" />
                     Exportação Completa
                   </h3>
-                  <p className="text-slate-400 text-sm mt-1">
+                  <p className="text-neutral-400 text-sm mt-1">
                     Baixe todos os dados em um único arquivo ZIP (TSV, CSV, XLSX, JSON)
                   </p>
                 </div>
                 <button
                   onClick={exportAllAsZip}
                   disabled={isProcessing}
-                  className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-xl hover:from-cyan-400 hover:to-blue-500 transition-all shadow-lg shadow-cyan-500/25 disabled:opacity-50 flex items-center gap-2"
+                  className="px-6 py-3 bg-neutral-700 text-white font-medium rounded-xl hover:bg-neutral-600 transition-all shadow-lg shadow-neutral-500/25 disabled:opacity-50 flex items-center gap-2"
                 >
                   {isProcessing ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -10318,15 +10469,15 @@ export default function TextAnalysisApp() {
             {/* Dados Textuais */}
             <div className={`${theme.card} rounded-2xl p-6 border ${theme.cardBorder}`}>
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-cyan-400" />
+                <FileText className="w-5 h-5 text-neutral-400" />
                 Dados Textuais
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
                 {/* Corpus IRaMuTeQ */}
-                <div className="bg-slate-700/50 rounded-xl p-4 border border-slate-600">
+                <div className="bg-neutral-700/50 rounded-xl p-4 border border-neutral-600">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-slate-600 flex items-center justify-center">
-                      <FileText className="w-5 h-5 text-cyan-400" />
+                    <div className="w-10 h-10 rounded-lg bg-neutral-600 flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-neutral-400" />
                     </div>
                     <div>
                       <div className="font-medium">Corpus IRaMuTeQ</div>
@@ -10335,16 +10486,16 @@ export default function TextAnalysisApp() {
                   </div>
                   <button
                     onClick={() => exportData('iramuteq')}
-                    className="w-full py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                    className="w-full py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                   >
                     Baixar .txt
                   </button>
                 </div>
 
                 {/* Frequências */}
-                <div className="bg-slate-700/50 rounded-xl p-4 border border-slate-600">
+                <div className="bg-neutral-700/50 rounded-xl p-4 border border-neutral-600">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-slate-600 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-neutral-600 flex items-center justify-center">
                       <BarChart3 className="w-5 h-5 text-purple-400" />
                     </div>
                     <div>
@@ -10355,13 +10506,13 @@ export default function TextAnalysisApp() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => exportData('frequency')}
-                      className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                      className="flex-1 py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                     >
                       .tsv
                     </button>
                     <button
                       onClick={() => exportData('frequency', 'csv')}
-                      className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                      className="flex-1 py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                     >
                       .csv
                     </button>
@@ -10369,9 +10520,9 @@ export default function TextAnalysisApp() {
                 </div>
 
                 {/* Coocorrências */}
-                <div className="bg-slate-700/50 rounded-xl p-4 border border-slate-600">
+                <div className="bg-neutral-700/50 rounded-xl p-4 border border-neutral-600">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-slate-600 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-neutral-600 flex items-center justify-center">
                       <Network className="w-5 h-5 text-green-400" />
                     </div>
                     <div>
@@ -10382,13 +10533,13 @@ export default function TextAnalysisApp() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => exportData('cooccurrence')}
-                      className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                      className="flex-1 py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                     >
                       .tsv
                     </button>
                     <button
                       onClick={() => exportData('cooccurrence', 'csv')}
-                      className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                      className="flex-1 py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                     >
                       .csv
                     </button>
@@ -10397,9 +10548,9 @@ export default function TextAnalysisApp() {
 
                 {/* CHD/Reinert */}
                 {analysisResults.chdResult && (
-                  <div className="bg-slate-700/50 rounded-xl p-4 border border-slate-600">
+                  <div className="bg-neutral-700/50 rounded-xl p-4 border border-neutral-600">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-lg bg-slate-600 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-neutral-600 flex items-center justify-center">
                         <Layers className="w-5 h-5 text-amber-400" />
                       </div>
                       <div>
@@ -10410,13 +10561,13 @@ export default function TextAnalysisApp() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => exportData('chd')}
-                        className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                        className="flex-1 py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                       >
                         .json
                       </button>
                       <button
                         onClick={() => exportData('chd', 'csv')}
-                        className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                        className="flex-1 py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                       >
                         .csv
                       </button>
@@ -10426,9 +10577,9 @@ export default function TextAnalysisApp() {
 
                 {/* Codificação */}
                 {codedSegments.length > 0 && (
-                  <div className="bg-slate-700/50 rounded-xl p-4 border border-slate-600">
+                  <div className="bg-neutral-700/50 rounded-xl p-4 border border-neutral-600">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-lg bg-slate-600 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-neutral-600 flex items-center justify-center">
                         <Tag className="w-5 h-5 text-rose-400" />
                       </div>
                       <div>
@@ -10438,7 +10589,7 @@ export default function TextAnalysisApp() {
                     </div>
                     <button
                       onClick={() => exportData('coding')}
-                      className="w-full py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                      className="w-full py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                     >
                       Baixar .csv
                     </button>
@@ -10446,10 +10597,10 @@ export default function TextAnalysisApp() {
                 )}
 
                 {/* Análise Completa */}
-                <div className="bg-slate-700/50 rounded-xl p-4 border border-slate-600">
+                <div className="bg-neutral-700/50 rounded-xl p-4 border border-neutral-600">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-slate-600 flex items-center justify-center">
-                      <Sparkles className="w-5 h-5 text-cyan-400" />
+                    <div className="w-10 h-10 rounded-lg bg-neutral-600 flex items-center justify-center">
+                      <Sparkles className="w-5 h-5 text-neutral-400" />
                     </div>
                     <div>
                       <div className="font-medium">Análise Completa</div>
@@ -10458,7 +10609,7 @@ export default function TextAnalysisApp() {
                   </div>
                   <button
                     onClick={() => exportData('full')}
-                    className="w-full py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                    className="w-full py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                   >
                     Baixar .json
                   </button>
@@ -10469,31 +10620,31 @@ export default function TextAnalysisApp() {
             {/* Visualizações como Imagem */}
             <div className={`${theme.card} rounded-2xl p-6 border ${theme.cardBorder}`}>
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <PieChart className="w-5 h-5 text-cyan-400" />
+                <PieChart className="w-5 h-5 text-neutral-400" />
                 Visualizações como Imagem
               </h3>
-              <p className="text-sm text-slate-400 mb-4">
+              <p className="text-sm text-neutral-400 mb-4">
                 💡 Navegue até a aba da visualização primeiro para que ela seja renderizada
               </p>
               <div className="grid md:grid-cols-3 gap-4">
                 {/* Nuvem de Palavras */}
-                <div className="bg-slate-700/50 rounded-xl p-4 border border-slate-600">
+                <div className="bg-neutral-700/50 rounded-xl p-4 border border-neutral-600">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-slate-600 flex items-center justify-center">
-                      <Cloud className="w-5 h-5 text-cyan-400" />
+                    <div className="w-10 h-10 rounded-lg bg-neutral-600 flex items-center justify-center">
+                      <Cloud className="w-5 h-5 text-neutral-400" />
                     </div>
                     <div className="font-medium">Nuvem de Palavras</div>
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={() => exportVisualizationAsImage('wordcloud', 'png')}
-                      className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                      className="flex-1 py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                     >
                       .png
                     </button>
                     <button
                       onClick={() => exportVisualizationAsImage('wordcloud', 'svg')}
-                      className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                      className="flex-1 py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                     >
                       .svg
                     </button>
@@ -10501,9 +10652,9 @@ export default function TextAnalysisApp() {
                 </div>
 
                 {/* Rede de Similitude */}
-                <div className="bg-slate-700/50 rounded-xl p-4 border border-slate-600">
+                <div className="bg-neutral-700/50 rounded-xl p-4 border border-neutral-600">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-slate-600 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-neutral-600 flex items-center justify-center">
                       <Network className="w-5 h-5 text-green-400" />
                     </div>
                     <div className="font-medium">Rede de Similitude</div>
@@ -10511,13 +10662,13 @@ export default function TextAnalysisApp() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => exportVisualizationAsImage('network', 'png')}
-                      className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                      className="flex-1 py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                     >
                       .png
                     </button>
                     <button
                       onClick={() => exportVisualizationAsImage('network', 'svg')}
-                      className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                      className="flex-1 py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                     >
                       .svg
                     </button>
@@ -10525,9 +10676,9 @@ export default function TextAnalysisApp() {
                 </div>
 
                 {/* CHD */}
-                <div className="bg-slate-700/50 rounded-xl p-4 border border-slate-600">
+                <div className="bg-neutral-700/50 rounded-xl p-4 border border-neutral-600">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-slate-600 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-neutral-600 flex items-center justify-center">
                       <Layers className="w-5 h-5 text-amber-400" />
                     </div>
                     <div className="font-medium">CHD/Reinert</div>
@@ -10535,13 +10686,13 @@ export default function TextAnalysisApp() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => exportVisualizationAsImage('chd', 'png')}
-                      className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                      className="flex-1 py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                     >
                       .png
                     </button>
                     <button
                       onClick={() => exportVisualizationAsImage('chd', 'svg')}
-                      className="flex-1 py-2 bg-slate-600 hover:bg-slate-500 rounded-lg text-sm transition-colors"
+                      className="flex-1 py-2 bg-neutral-600 hover:bg-neutral-500 rounded-lg text-sm transition-colors"
                     >
                       .svg
                     </button>
@@ -10561,26 +10712,26 @@ export default function TextAnalysisApp() {
           className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-start justify-center overflow-y-auto py-4"
           onClick={(e) => e.target === e.currentTarget && setShowIncidenceModal(false)}
         >
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-5xl mx-4 my-auto flex flex-col" style={{ maxHeight: 'calc(100vh - 2rem)' }}>
+          <div className="bg-neutral-900 border border-neutral-700 rounded-2xl w-full max-w-5xl mx-4 my-auto flex flex-col" style={{ maxHeight: 'calc(100vh - 2rem)' }}>
             {/* Header do Modal - sempre visível */}
-            <div className="flex-shrink-0 flex items-center justify-between p-4 md:p-6 border-b border-slate-700 bg-slate-900 rounded-t-2xl sticky top-0 z-10">
+            <div className="flex-shrink-0 flex items-center justify-between p-4 md:p-6 border-b border-neutral-700 bg-neutral-900 rounded-t-2xl sticky top-0 z-10">
               <div>
                 <h2 className="text-lg md:text-xl font-bold flex items-center gap-2">
-                  <Search className="w-5 h-5 md:w-6 md:h-6 text-cyan-400" />
+                  <Search className="w-5 h-5 md:w-6 md:h-6 text-neutral-400" />
                   Análise de Incidências
                   {incidenceAnalysis && (
-                    <span className="ml-2 px-3 py-1 bg-cyan-500/20 text-cyan-300 rounded-full text-sm font-medium">
+                    <span className="ml-2 px-3 py-1 bg-neutral-500/20 text-neutral-200 rounded-full text-sm font-medium">
                       "{incidenceAnalysis.word}"
                     </span>
                   )}
                 </h2>
-                <p className="text-slate-400 text-sm mt-1 hidden md:block">
+                <p className="text-neutral-400 text-sm mt-1 hidden md:block">
                   Rastreabilidade científica completa de todas as ocorrências
                 </p>
               </div>
               <button
                 onClick={() => setShowIncidenceModal(false)}
-                className="p-2 hover:bg-slate-800 rounded-lg transition-colors flex-shrink-0 bg-slate-800/50"
+                className="p-2 hover:bg-neutral-800 rounded-lg transition-colors flex-shrink-0 bg-neutral-800/50"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -10590,30 +10741,30 @@ export default function TextAnalysisApp() {
             <div className="flex-1 overflow-y-auto p-4 md:p-6">
             {isAnalyzingIncidence ? (
               <div className="flex flex-col items-center justify-center py-12">
-                <Loader2 className="w-12 h-12 text-cyan-400 animate-spin mb-4" />
-                <p className="text-slate-400">Analisando todas as incidências e variações...</p>
+                <Loader2 className="w-12 h-12 text-neutral-400 animate-spin mb-4" />
+                <p className="text-neutral-400">Analisando todas as incidências e variações...</p>
               </div>
             ) : incidenceAnalysis ? (
               <div className="space-y-6">
                 {/* Estatísticas Resumidas */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                  <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
-                    <div className="text-3xl font-bold text-cyan-400">{incidenceAnalysis.statistics.totalOccurrences}</div>
+                  <div className="bg-neutral-800/50 rounded-xl p-4 border border-neutral-700">
+                    <div className="text-3xl font-bold text-neutral-400">{incidenceAnalysis.statistics.totalOccurrences}</div>
                     <div className={`text-sm ${theme.muted}`}>Total de Ocorrências</div>
                   </div>
-                  <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                  <div className="bg-neutral-800/50 rounded-xl p-4 border border-neutral-700">
                     <div className="text-3xl font-bold text-purple-400">{incidenceAnalysis.statistics.uniqueVariationsFound || 1}</div>
                     <div className={`text-sm ${theme.muted}`}>Variações Encontradas</div>
                   </div>
-                  <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                  <div className="bg-neutral-800/50 rounded-xl p-4 border border-neutral-700">
                     <div className="text-3xl font-bold text-green-400">{incidenceAnalysis.statistics.documentsWithWord}</div>
                     <div className={`text-sm ${theme.muted}`}>Documentos</div>
                   </div>
-                  <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                  <div className="bg-neutral-800/50 rounded-xl p-4 border border-neutral-700">
                     <div className="text-3xl font-bold text-amber-400">{incidenceAnalysis.statistics.coveragePercentage}</div>
                     <div className={`text-sm ${theme.muted}`}>Cobertura</div>
                   </div>
-                  <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                  <div className="bg-neutral-800/50 rounded-xl p-4 border border-neutral-700">
                     <div className="text-3xl font-bold text-rose-400">{incidenceAnalysis.statistics.averagePerDocument}</div>
                     <div className={`text-sm ${theme.muted}`}>Média/Doc</div>
                   </div>
@@ -10621,26 +10772,26 @@ export default function TextAnalysisApp() {
                 
                 {/* Variações Encontradas */}
                 {incidenceAnalysis.statistics.variationBreakdown && incidenceAnalysis.statistics.variationBreakdown.length > 0 && (
-                  <div className="bg-gradient-to-br from-purple-900/30 to-cyan-900/30 rounded-xl p-4 border border-purple-500/30">
+                  <div className="bg-gradient-to-br from-purple-900/30 to-neutral-800/30 rounded-xl p-4 border border-purple-500/30">
                     <h4 className="font-semibold text-purple-300 mb-3 flex items-center gap-2">
                       <Layers className="w-4 h-4" />
                       Variações Morfológicas Agrupadas
                     </h4>
-                    <p className="text-xs text-slate-400 mb-3">
+                    <p className="text-xs text-neutral-400 mb-3">
                       Inclui: gênero (ministro/ministra), número (singular/plural), linguagem neutra (x, @), e possíveis typos
                     </p>
                     <div className="grid gap-2">
                       {incidenceAnalysis.statistics.variationBreakdown.map((v, idx) => (
-                        <div key={idx} className="flex items-center justify-between bg-slate-800/50 rounded-lg px-3 py-2">
+                        <div key={idx} className="flex items-center justify-between bg-neutral-800/50 rounded-lg px-3 py-2">
                           <div className="flex items-center gap-3">
-                            <span className="font-mono text-cyan-300 font-medium">{v.variation}</span>
-                            <span className="text-xs text-slate-500">
+                            <span className="font-mono text-neutral-200 font-medium">{v.variation}</span>
+                            <span className="text-xs text-neutral-500">
                               ({v.originalForms.join(', ')})
                             </span>
                           </div>
                           <div className="flex items-center gap-3">
                             <span className="text-white font-bold">{v.count}x</span>
-                            <span className="text-xs text-slate-400 bg-slate-700 px-2 py-1 rounded">{v.percentage}</span>
+                            <span className="text-xs text-neutral-400 bg-neutral-700 px-2 py-1 rounded">{v.percentage}</span>
                           </div>
                         </div>
                       ))}
@@ -10649,29 +10800,29 @@ export default function TextAnalysisApp() {
                 )}
                 
                 {/* Metodologia */}
-                <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-600">
-                  <h4 className="font-semibold text-cyan-300 mb-2 flex items-center gap-2">
+                <div className="bg-neutral-800/30 rounded-xl p-4 border border-neutral-600">
+                  <h4 className="font-semibold text-neutral-200 mb-2 flex items-center gap-2">
                     <BookOpen className="w-4 h-4" />
                     Metodologia Aplicada
                   </h4>
                   <div className="grid md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-slate-400">Método de busca:</span>
+                      <span className="text-neutral-400">Método de busca:</span>
                       <span className="text-white ml-2">{incidenceAnalysis.methodology.searchMethod}</span>
                     </div>
                     <div>
-                      <span className="text-slate-400">Janela de contexto:</span>
+                      <span className="text-neutral-400">Janela de contexto:</span>
                       <span className="text-white ml-2">{incidenceAnalysis.methodology.contextWindow}</span>
                     </div>
                   </div>
                   {incidenceAnalysis.variationsSearched && incidenceAnalysis.variationsSearched.length > 1 && (
-                    <div className="mt-3 p-3 bg-slate-900/50 rounded-lg text-xs">
-                      <span className="text-slate-400">Variações buscadas: </span>
-                      <span className="text-cyan-300 font-mono">{incidenceAnalysis.variationsSearched.join(', ')}</span>
+                    <div className="mt-3 p-3 bg-neutral-900/50 rounded-lg text-xs">
+                      <span className="text-neutral-400">Variações buscadas: </span>
+                      <span className="text-neutral-200 font-mono">{incidenceAnalysis.variationsSearched.join(', ')}</span>
                     </div>
                   )}
-                  <div className="mt-3 p-3 bg-slate-900/50 rounded-lg font-mono text-xs text-slate-300">
-                    <div className="text-slate-500 mb-1">// Algoritmo de normalização:</div>
+                  <div className="mt-3 p-3 bg-neutral-900/50 rounded-lg font-mono text-xs text-neutral-300">
+                    <div className="text-neutral-500 mb-1">// Algoritmo de normalização:</div>
                     <div>normalize("{incidenceAnalysis.word}") → "{incidenceAnalysis.normalizedForm || incidenceAnalysis.word}"</div>
                   </div>
                 </div>
@@ -10679,15 +10830,15 @@ export default function TextAnalysisApp() {
                 {/* Lista de Todas as Ocorrências */}
                 <div>
                   <h4 className="font-semibold mb-3 flex items-center gap-2">
-                    <Hash className="w-4 h-4 text-cyan-400" />
+                    <Hash className="w-4 h-4 text-neutral-400" />
                     Todas as Ocorrências ({incidenceAnalysis.allContexts?.length || 0})
                   </h4>
                   <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
                     {(incidenceAnalysis.allContexts || []).map((occ, idx) => (
-                      <div key={idx} className="bg-slate-800/50 rounded-lg p-4 border border-slate-700 hover:border-cyan-500/30 transition-colors">
+                      <div key={idx} className="bg-neutral-800/50 rounded-lg p-4 border border-neutral-700 hover:border-neutral-500/30 transition-colors">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-mono bg-slate-700 px-2 py-1 rounded">
+                            <span className="text-xs font-mono bg-neutral-700 px-2 py-1 rounded">
                               #{idx + 1}
                             </span>
                             {!occ.isExactMatch && (
@@ -10696,22 +10847,22 @@ export default function TextAnalysisApp() {
                               </span>
                             )}
                           </div>
-                          <div className="flex items-center gap-3 text-xs text-slate-400">
+                          <div className="flex items-center gap-3 text-xs text-neutral-400">
                             <span>📄 {occ.documentName}</span>
                             <span>📍 Linha {occ.lineNumber}, Col {occ.columnNumber}</span>
                             <span>🔢 Char {occ.charIndexStart}-{occ.charIndexEnd}</span>
                           </div>
                         </div>
                         <div className="font-mono text-sm">
-                          <span className="text-slate-400">...</span>
-                          <span className="text-slate-300">{occ.contextBefore}</span>
-                          <span className={`px-1 rounded font-bold ${occ.isExactMatch ? 'bg-cyan-500/30 text-cyan-200' : 'bg-purple-500/30 text-purple-200'}`}>
+                          <span className="text-neutral-400">...</span>
+                          <span className="text-neutral-300">{occ.contextBefore}</span>
+                          <span className={`px-1 rounded font-bold ${occ.isExactMatch ? 'bg-neutral-500/30 text-neutral-200' : 'bg-purple-500/30 text-purple-200'}`}>
                             {occ.matchedText}
                           </span>
-                          <span className="text-slate-300">{occ.contextAfter}</span>
-                          <span className="text-slate-400">...</span>
+                          <span className="text-neutral-300">{occ.contextAfter}</span>
+                          <span className="text-neutral-400">...</span>
                         </div>
-                        <div className="mt-2 text-xs text-slate-500 italic border-l-2 border-slate-600 pl-2">
+                        <div className="mt-2 text-xs text-neutral-500 italic border-l-2 border-neutral-600 pl-2">
                           Frase: "{(occ.fullSentence || '').slice(0, 150)}{(occ.fullSentence?.length || 0) > 150 ? '...' : ''}"
                         </div>
                       </div>
@@ -10723,15 +10874,15 @@ export default function TextAnalysisApp() {
                 {incidenceAnalysis.occurrencesByDocument?.length > 0 && (
                   <div>
                     <h4 className="font-semibold mb-3 flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-cyan-400" />
+                      <FileText className="w-4 h-4 text-neutral-400" />
                       Distribuição por Documento
                     </h4>
                     <div className="space-y-2">
                       {(incidenceAnalysis.occurrencesByDocument || []).map((doc, idx) => (
-                        <div key={idx} className="flex items-center gap-3 bg-slate-800/30 rounded-lg p-3">
-                          <span className="text-sm font-medium text-slate-300 flex-1 truncate">{doc.documentName}</span>
-                          <span className="text-cyan-400 font-bold">{doc.count}x</span>
-                          <span className="text-xs text-slate-500">{doc.relativeFrequency}</span>
+                        <div key={idx} className="flex items-center gap-3 bg-neutral-800/30 rounded-lg p-3">
+                          <span className="text-sm font-medium text-neutral-300 flex-1 truncate">{doc.documentName}</span>
+                          <span className="text-neutral-400 font-bold">{doc.count}x</span>
+                          <span className="text-xs text-neutral-500">{doc.relativeFrequency}</span>
                         </div>
                       ))}
                     </div>
@@ -10743,18 +10894,18 @@ export default function TextAnalysisApp() {
             
             {/* Footer do Modal com botões de exportação - sempre visível */}
             {incidenceAnalysis && !isAnalyzingIncidence && (
-              <div className="flex-shrink-0 p-4 md:p-6 border-t border-slate-700 bg-slate-800/50 rounded-b-2xl">
+              <div className="flex-shrink-0 p-4 md:p-6 border-t border-neutral-700 bg-neutral-800/50 rounded-b-2xl">
                 <div className="flex flex-wrap gap-3 justify-end">
                   <button
                     onClick={exportIncidenceCSV}
-                    className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors text-sm"
+                    className="flex items-center gap-2 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg transition-colors text-sm"
                   >
                     <Download className="w-4 h-4" />
                     Exportar CSV
                   </button>
                   <button
                     onClick={exportScientificReport}
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 rounded-lg transition-colors font-medium text-sm"
+                    className="flex items-center gap-2 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg transition-colors font-medium text-sm"
                   >
                     <FileText className="w-4 h-4" />
                     Relatório Científico
