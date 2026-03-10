@@ -5281,7 +5281,8 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
 
   const maxCount = Math.max(...words.map(w => w.count));
 
-  // Resolve label collisions for AFC scatter points
+  // === POINT REPULSION: prevent dots from sitting on top of each other ===
+  // After scaling, push overlapping circles apart iteratively
   const positionedWords = useMemo(() => {
     const pts = words.map(w => ({
       ...w,
@@ -5291,8 +5292,43 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
       label: w.word,
       fontSize: Math.max(9, Math.min(14, 8 + (w.count / maxCount) * 6)),
     }));
-    // Run label collision resolution
-    return resolveLabelCollisions(pts, { iterations: 40, padding: 3, charWidth: 5 });
+
+    // Point repulsion iterations — keep dots at least (r1 + r2 + buffer) apart
+    const buffer = 4;
+    for (let iter = 0; iter < 60; iter++) {
+      let moved = false;
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const a = pts[i], b = pts[j];
+          const dx = a.px - b.px;
+          const dy = a.py - b.py;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 0.01;
+          const minDist = a.radius + b.radius + buffer;
+          if (dist < minDist) {
+            const push = (minDist - dist) / 2;
+            const nx = dx / dist;
+            const ny = dy / dist;
+            a.px += nx * push;
+            a.py += ny * push;
+            b.px -= nx * push;
+            b.py -= ny * push;
+            moved = true;
+          }
+        }
+      }
+      if (!moved) break;
+    }
+
+    // Clamp points inside plot area
+    const xMin = margin.left + 10, xMax = width - margin.right - 10;
+    const yMin = margin.top + 10, yMax = height - margin.bottom - 10;
+    pts.forEach(p => {
+      p.px = Math.max(xMin, Math.min(xMax, p.px));
+      p.py = Math.max(yMin, Math.min(yMax, p.py));
+    });
+
+    // Then resolve label collisions on top of that
+    return resolveLabelCollisions(pts, { iterations: 50, padding: 4, charWidth: 5.2 });
   }, [words, maxCount]);
 
   return (
@@ -5305,6 +5341,10 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
               <feMergeNode in="coloredBlur"/>
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
+          </filter>
+          {/* Drop shadow for label backgrounds */}
+          <filter id="labelShadowAFC" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="#000" floodOpacity="0.5"/>
           </filter>
         </defs>
 
@@ -5334,8 +5374,8 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
         <line x1={centerX} y1={margin.top} x2={centerX} y2={height - margin.bottom} stroke="#475569" strokeWidth={1} />
 
         {/* Labels dos eixos */}
-        <text x={width - margin.right + 10} y={centerY + 5} fill="#94a3b8" fontSize={12}>Fator 1</text>
-        <text x={centerX + 5} y={margin.top - 10} fill="#94a3b8" fontSize={12}>Fator 2</text>
+        <text x={width - margin.right + 10} y={centerY + 5} fill="#94a3b8" fontSize={12} fontWeight={600}>Fator 1</text>
+        <text x={centerX + 5} y={margin.top - 10} fill="#94a3b8" fontSize={12} fontWeight={600}>Fator 2</text>
 
         {/* Variância explicada */}
         <text x={width - margin.right} y={centerY + 20} fill="#6b7280" fontSize={10} textAnchor="end">
@@ -5365,16 +5405,31 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
           </g>
         ))}
 
-        {/* Palavras */}
-        {positionedWords.map((w, idx) => {
+        {/* Connector lines from dot to label (when label is displaced) */}
+        {showLabels && positionedWords.map((w) => {
           const x = w.px;
           const y = w.py;
           const labelX = w.labelX ?? x;
-          const labelY = w.labelY ?? (y - w.radius - 3);
+          const labelY = w.labelY ?? (y - w.radius - 6);
+          const dist = Math.sqrt((labelX - x) ** 2 + (labelY - y) ** 2);
+          if (dist < w.radius + 6 || w.count <= maxCount * 0.05) return null;
+          return (
+            <line
+              key={`conn-${w.word}`}
+              x1={x} y1={y} x2={labelX} y2={labelY + 4}
+              stroke="#475569" strokeWidth={0.7} strokeDasharray="2,2" opacity={0.5}
+            />
+          );
+        })}
+
+        {/* Palavras - circles */}
+        {positionedWords.map((w) => {
+          const x = w.px;
+          const y = w.py;
           const isHovered = hoveredWord === w.word;
-          const size = 3 + (w.count / maxCount) * 8;
+          const size = w.radius;
           const color = getColor(w.x, w.y);
-          const opacity = hoveredWord ? (isHovered ? 1 : 0.15) : 0.7;
+          const opacity = hoveredWord ? (isHovered ? 1 : 0.2) : 0.8;
 
           return (
             <g
@@ -5384,28 +5439,71 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
               style={{ cursor: 'pointer' }}
               filter={isHovered ? 'url(#glowAFC)' : 'none'}
             >
+              {/* Outer ring on hover */}
+              {isHovered && (
+                <circle cx={x} cy={y} r={size + 5} fill="none" stroke={color} strokeWidth={1.5} strokeDasharray="3,2" opacity={0.6} />
+              )}
               <circle
-                cx={x}
-                cy={y}
+                cx={x} cy={y}
                 r={isHovered ? size + 2 : size}
                 fill={color}
                 fillOpacity={opacity}
-                stroke={isHovered ? '#fff' : 'none'}
-                strokeWidth={2}
+                stroke={isHovered ? '#fff' : color}
+                strokeWidth={isHovered ? 2 : 0.5}
+                strokeOpacity={isHovered ? 1 : 0.3}
               />
-              {(showLabels || isHovered) && w.count > maxCount * 0.05 && (
-                <text
-                  x={labelX}
-                  y={labelY}
-                  textAnchor="middle"
-                  fill={isHovered ? '#fff' : color}
-                  fontSize={isHovered ? 12 : 9}
-                  fontWeight={isHovered ? 700 : 400}
-                  opacity={opacity}
-                >
-                  {w.word}
-                </text>
-              )}
+            </g>
+          );
+        })}
+
+        {/* Labels layer (rendered on top of all circles) */}
+        {positionedWords.map((w) => {
+          const x = w.px;
+          const y = w.py;
+          const labelX = w.labelX ?? x;
+          const labelY = w.labelY ?? (y - w.radius - 6);
+          const isHovered = hoveredWord === w.word;
+          const color = getColor(w.x, w.y);
+          const opacity = hoveredWord ? (isHovered ? 1 : 0.2) : 0.85;
+          const fs = isHovered ? Math.max(13, w.fontSize + 2) : w.fontSize;
+          const textW = w.word.length * (fs * 0.55);
+
+          if (!showLabels && !isHovered) return null;
+          if (w.count <= maxCount * 0.05 && !isHovered) return null;
+
+          return (
+            <g
+              key={`lbl-${w.word}`}
+              onMouseEnter={() => setHoveredWord(w.word)}
+              onMouseLeave={() => setHoveredWord(null)}
+              style={{ cursor: 'pointer' }}
+              opacity={opacity}
+            >
+              {/* Background pill behind label for readability */}
+              <rect
+                x={labelX - textW / 2 - 4}
+                y={labelY - fs / 2 - 2}
+                width={textW + 8}
+                height={fs + 4}
+                rx={4}
+                fill={isHovered ? color : '#0f172a'}
+                fillOpacity={isHovered ? 0.85 : 0.7}
+                stroke={isHovered ? '#fff' : color}
+                strokeWidth={isHovered ? 1.5 : 0.5}
+                strokeOpacity={isHovered ? 0.9 : 0.3}
+                filter={isHovered ? 'url(#labelShadowAFC)' : 'none'}
+              />
+              <text
+                x={labelX}
+                y={labelY + fs * 0.3}
+                textAnchor="middle"
+                fill={isHovered ? '#fff' : '#e2e8f0'}
+                fontSize={fs}
+                fontWeight={isHovered ? 700 : 500}
+                style={{ textShadow: isHovered ? 'none' : '0 1px 2px rgba(0,0,0,0.8)' }}
+              >
+                {w.word}
+              </text>
             </g>
           );
         })}
@@ -5420,22 +5518,32 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
             onChange={(e) => setShowLabels(e.target.checked)}
             className="rounded"
           />
-          Mostrar
+          Mostrar rótulos
         </label>
       </div>
 
       {/* Tooltip */}
-      {hoveredWord && (
-        <div className="absolute bottom-4 left-4 px-4 py-2 bg-slate-900/95 border border-cyan-500/40 rounded-lg shadow-xl z-10">
-          <div className="text-white font-bold">{hoveredWord}</div>
-          <div className={`text-sm text-slate-400`}>
-            Frequência: <span className="text-white font-medium">{words.find(w => w.word === hoveredWord)?.count}</span>
+      {hoveredWord && (() => {
+        const w = words.find(w => w.word === hoveredWord);
+        if (!w) return null;
+        return (
+          <div className="absolute bottom-4 left-4 px-4 py-3 bg-slate-900/95 border border-cyan-500/40 rounded-lg shadow-xl z-10 min-w-[180px]">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: getColor(w.x, w.y) }} />
+              <span className="text-white font-bold text-base">{w.word}</span>
+            </div>
+            <div className="text-sm text-slate-400">
+              Frequência: <span className="text-white font-medium">{w.count}</span>
+            </div>
+            <div className="text-xs text-slate-500 mt-1">
+              Fator 1: <span className="text-cyan-300 font-mono">{w.x.toFixed(3)}</span> · Fator 2: <span className="text-cyan-300 font-mono">{w.y.toFixed(3)}</span>
+            </div>
+            <div className="text-xs text-slate-600 mt-1">
+              Quadrante {w.x > 0 ? (w.y > 0 ? '1 ↗' : '4 ↘') : (w.y > 0 ? '2 ↖' : '3 ↙')}
+            </div>
           </div>
-          <div className="text-xs text-slate-500 mt-1">
-            Coordenadas: <span className="text-white">({words.find(w => w.word === hoveredWord)?.x.toFixed(2)}, {words.find(w => w.word === hoveredWord)?.y.toFixed(2)})</span>
-          </div>
-        </div>
-      )}
+        );
+      })()}
     </ZoomPanSVG>
   );
 };
