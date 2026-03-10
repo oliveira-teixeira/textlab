@@ -565,18 +565,25 @@ const forceDirectedLayout = (nodes, edges = [], opts = {}) => {
  * @returns {Array} nodes with added labelX, labelY offsets
  */
 const resolveLabelCollisions = (nodes, opts = {}) => {
-  const { iterations = 30, padding = 4, charWidth = 5.5 } = opts;
+  const { iterations = 18, padding = 4, charWidth = 5.5, springStrength = 0.32 } = opts;
   if (!nodes || nodes.length < 2) return nodes;
 
-  const labels = nodes.map(n => ({
-    ref: n,
-    x: n.labelX ?? n.x,
-    y: n.labelY ?? (n.y - (n.radius || 10) - 6),
-    w: (n.label || n.id || '').length * charWidth * ((n.fontSize || 10) / 10),
-    h: (n.fontSize || 10) + 2,
-  }));
+  const labels = nodes.map(n => {
+    const originX = n.labelX ?? n.x;
+    const originY = n.labelY ?? (n.y - (n.radius || 10) - 6);
+    return {
+      ref: n,
+      x: originX,
+      y: originY,
+      originX,
+      originY,
+      w: (n.label || n.id || '').length * charWidth * ((n.fontSize || 10) / 10),
+      h: (n.fontSize || 10) + 2,
+    };
+  });
 
   for (let iter = 0; iter < iterations; iter++) {
+    // Push overlapping labels apart
     for (let i = 0; i < labels.length; i++) {
       for (let j = i + 1; j < labels.length; j++) {
         const a = labels[i], b = labels[j];
@@ -592,6 +599,11 @@ const resolveLabelCollisions = (nodes, opts = {}) => {
           }
         }
       }
+    }
+    // Spring-back: pull labels toward their origin (near dot)
+    for (const l of labels) {
+      l.x += (l.originX - l.x) * springStrength;
+      l.y += (l.originY - l.y) * springStrength;
     }
   }
 
@@ -1144,27 +1156,81 @@ const codeColorPalette = [
   '#ec4899', '#f43f5e', '#78716c', '#71717a', '#64748b'
 ];
 
+// ==================== TIMESTAMP REMOVAL ====================
+const removeTimestampsFromText = (text) => {
+  let cleaned = text;
+  // HH:MM:SS or HH:MM patterns
+  cleaned = cleaned.replace(/\b\d{1,2}:\d{2}(:\d{2})?\b/g, ' ');
+  // "12min", "5 min", "45min", "1h30", "2h", etc.
+  cleaned = cleaned.replace(/\b\d{1,3}\s*(min|mins|minutos?|h|hrs?|horas?|seg|segundos?)\b/gi, ' ');
+  // "aos 5 minutos", "no minuto 32", "aos 12min"
+  cleaned = cleaned.replace(/\b(aos?|no|na|do|da|em|até)\s+\d{1,3}\s*(min|mins|minutos?|seg|segundos?|tempo)?\b/gi, ' ');
+  // Standalone timestamps like [00:12:34] or (12:45)
+  cleaned = cleaned.replace(/[\[\(]\d{1,2}:\d{2}(:\d{2})?[\]\)]/g, ' ');
+  // "minuto 5", "segundo 30"
+  cleaned = cleaned.replace(/\b(minuto|segundo|hora)\s+\d{1,3}\b/gi, ' ');
+  return cleaned.replace(/\s+/g, ' ').trim();
+};
+
+// ==================== NAME REMOVAL ====================
+const COMMON_NAMES_SET = new Set([
+  // Brazilian/Portuguese common first names
+  'maria', 'jose', 'joao', 'ana', 'francisco', 'antonio', 'carlos', 'paulo', 'pedro', 'lucas',
+  'luiz', 'marcos', 'luis', 'gabriel', 'rafael', 'daniel', 'marcelo', 'bruno', 'eduardo', 'felipe',
+  'rodrigo', 'manoel', 'fabio', 'ricardo', 'fernando', 'gustavo', 'jorge', 'andre', 'roberto', 'diego',
+  'sergio', 'claudio', 'adriano', 'leandro', 'alexandre', 'leonardo', 'thiago', 'tiago', 'renato', 'vitor',
+  'juliana', 'patricia', 'fernanda', 'aline', 'amanda', 'bruna', 'camila', 'carolina', 'cristiane', 'daniela',
+  'jessica', 'leticia', 'luciana', 'mariana', 'michele', 'natalia', 'priscila', 'raquel', 'sandra', 'tatiana',
+  'vanessa', 'viviane', 'bianca', 'beatriz', 'larissa', 'renata', 'simone', 'eliane', 'rosana', 'debora',
+  'matheus', 'guilherme', 'henrique', 'caio', 'vinicius', 'arthur', 'bernardo', 'enzo', 'miguel', 'davi',
+  'samuel', 'benjamin', 'nicolas', 'heitor', 'lorenzo', 'theo', 'valentina', 'helena', 'alice', 'laura',
+  'sophia', 'isabella', 'manuela', 'cecilia', 'luana', 'giovanna', 'luisa', 'rafaela', 'gabriela', 'isadora',
+  'emily', 'emilly', 'emili', 'loide', 'loíde', 'ariel', 'taina', 'tainá',
+  // Common English first names
+  'james', 'john', 'robert', 'michael', 'david', 'william', 'richard', 'joseph', 'thomas', 'charles',
+  'mary', 'jennifer', 'linda', 'elizabeth', 'barbara', 'susan', 'jessica', 'sarah', 'karen', 'nancy',
+  'mark', 'donald', 'steven', 'paul', 'andrew', 'joshua', 'kenneth', 'kevin', 'brian', 'george',
+  'timothy', 'ronald', 'edward', 'jason', 'jeffrey', 'ryan', 'jacob', 'gary', 'nicholas', 'eric',
+  'stephen', 'jonathan', 'larry', 'justin', 'scott', 'brandon', 'benjamin', 'samuel', 'raymond', 'gregory',
+  // Common surnames (PT/EN)
+  'silva', 'santos', 'oliveira', 'souza', 'pereira', 'costa', 'rodrigues', 'almeida', 'nascimento', 'lima',
+  'araujo', 'fernandes', 'carvalho', 'gomes', 'martins', 'rocha', 'ribeiro', 'alves', 'monteiro', 'mendes',
+  'barros', 'freitas', 'barbosa', 'pinto', 'moura', 'cavalcanti', 'dias', 'campos', 'cardoso', 'teixeira',
+  'smith', 'johnson', 'williams', 'brown', 'jones', 'garcia', 'miller', 'davis', 'rodriguez', 'martinez',
+  'wilson', 'anderson', 'taylor', 'moore', 'jackson', 'martin', 'lee', 'thompson', 'white', 'harris',
+  'porto', 'macena', 'braga', 'hermes', 'mercurio', 'fausto', 'muniz', 'sodre', 'neto', 'barbero',
+]);
+
+const removeNamesFromTokens = (tokens) => {
+  return tokens.filter(w => !COMMON_NAMES_SET.has(w.toLowerCase()));
+};
+
 const cleanText = (text, options = {}, customStopwords = null) => {
-  const { removeNumbers = true, removePunctuation = true, lowercase = true, removeStopwords = true, minLength = 4 } = options;
-  
+  const { removeNumbers = true, removePunctuation = true, lowercase = true, removeStopwords = true, removeNames = false, removeTimestamps = false, minLength = 4 } = options;
+
   // Forçar mínimo de 4 caracteres para evitar conectivos
   const effectiveMinLength = Math.max(minLength, 4);
-  
+
   let cleaned = text;
+  if (removeTimestamps) cleaned = removeTimestampsFromText(cleaned);
   if (lowercase) cleaned = cleaned.toLowerCase();
   if (removeNumbers) cleaned = cleaned.replace(/\d+/g, ' ');
   if (removePunctuation) cleaned = cleaned.replace(/[^\w\sáàâãéèêíìîóòôõúùûçñ]/gi, ' ');
   cleaned = cleaned.replace(/\s+/g, ' ').trim();
-  
+
   let words = cleaned.split(' ').filter(w => w.length >= effectiveMinLength);
-  
+
   // SEMPRE filtrar palavras curtas obrigatórias (conectivos, preposições, etc.)
   words = words.filter(w => !MANDATORY_SHORT_WORDS_PT.has(w.toLowerCase()));
-  
+
   if (removeStopwords && customStopwords) {
     words = words.filter(w => !customStopwords.has(w));
   }
-  
+
+  if (removeNames) {
+    words = removeNamesFromTokens(words);
+  }
+
   return words;
 };
 
@@ -4544,7 +4610,7 @@ const SpecificitiesPanel = ({ statisticalAnalysis }) => {
     return (
       <div className="text-center py-8 text-neutral-400">
         <p>Análise de especificidades requer pelo menos 2 corpus com documentos.</p>
-        <p className="text-sm mt-2">Crie múltiplos corpus na aba Importar para comparar.</p>
+        <p className="text-sm mt-2">Crie múltiplos corpus na aba Home para comparar.</p>
       </div>
     );
   }
@@ -5327,8 +5393,14 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
       p.py = Math.max(yMin, Math.min(yMax, p.py));
     });
 
-    // Then resolve label collisions on top of that
-    return resolveLabelCollisions(pts, { iterations: 50, padding: 4, charWidth: 5.2 });
+    // Set initial label positions right next to dots before collision resolution
+    pts.forEach(p => {
+      p.labelX = p.px;
+      p.labelY = p.py - p.radius - 6;
+    });
+
+    // Resolve label collisions with spring-back to keep labels near dots
+    return resolveLabelCollisions(pts, { iterations: 18, padding: 4, charWidth: 5.2, springStrength: 0.32 });
   }, [words, maxCount]);
 
   return (
@@ -5336,7 +5408,7 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
       <svg width={width} height={height} className="bg-neutral-900/30 rounded-xl">
         <defs>
           <filter id="glowAFC">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
             <feMerge>
               <feMergeNode in="coloredBlur"/>
               <feMergeNode in="SourceGraphic"/>
@@ -5405,19 +5477,19 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
           </g>
         ))}
 
-        {/* Connector lines from dot to label (when label is displaced) */}
+        {/* Connector lines from dot to label (only when significantly displaced) */}
         {showLabels && positionedWords.map((w) => {
           const x = w.px;
           const y = w.py;
           const labelX = w.labelX ?? x;
           const labelY = w.labelY ?? (y - w.radius - 6);
           const dist = Math.sqrt((labelX - x) ** 2 + (labelY - y) ** 2);
-          if (dist < w.radius + 6 || w.count <= maxCount * 0.05) return null;
+          if (dist < 25 || w.count <= maxCount * 0.05) return null;
           return (
             <line
               key={`conn-${w.word}`}
               x1={x} y1={y} x2={labelX} y2={labelY + 4}
-              stroke="#475569" strokeWidth={0.7} strokeDasharray="2,2" opacity={0.5}
+              stroke="#475569" strokeWidth={0.5} strokeDasharray="2,2" opacity={0.3}
             />
           );
         })}
@@ -6279,6 +6351,8 @@ export default function TextAnalysisApp() {
     removePunctuation: true,
     lowercase: true,
     removeStopwords: true,
+    removeNames: false,
+    removeTimestamps: false,
     groupVariations: true, // Agrupar variações morfológicas (gênero, plural, typos)
     minLength: 4 // Mínimo 4 letras para evitar conectivos e palavras curtas
   });
@@ -8411,7 +8485,7 @@ export default function TextAnalysisApp() {
   }, [analysisResults, documents, codedSegments, arrayToCSV]);
   
   const tabs = [
-    { id: 'upload', label: 'Importar', icon: Upload },
+    { id: 'upload', label: 'Home', icon: LayoutGrid },
     { id: 'stats', label: 'Estatísticas', icon: BarChart3, disabled: !analysisResults },
     { id: 'wordcloud', label: 'Nuvem', icon: Cloud, disabled: !analysisResults },
     { id: 'termsberry', label: 'TermsBerry', icon: CircleDot, disabled: !analysisResults },
@@ -8436,7 +8510,7 @@ export default function TextAnalysisApp() {
   
   // Classes de tema
   const theme = isDarkMode ? {
-    bg: 'bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950',
+    bg: 'bg-neutral-950',
     text: 'text-white',
     sidebar: 'bg-neutral-900/95',
     sidebarBorder: 'border-neutral-800/50',
@@ -8450,7 +8524,7 @@ export default function TextAnalysisApp() {
     accentBg: 'bg-neutral-500/20',
     hover: 'hover:bg-neutral-700',
   } : {
-    bg: 'bg-gradient-to-br from-neutral-100 via-white to-neutral-100',
+    bg: 'bg-neutral-100',
     text: 'text-neutral-900',
     sidebar: 'bg-white/95',
     sidebarBorder: 'border-neutral-200',
@@ -8467,21 +8541,13 @@ export default function TextAnalysisApp() {
   
   return (
     <div className={`min-h-screen ${theme.bg} ${theme.text} flex`}>
-      {/* Ambient background */}
-      {isDarkMode && (
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-neutral-500/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-neutral-500/5 to-transparent rounded-full" />
-        </div>
-      )}
-      
+      {/* Background - clean flat */}
       {/* Sidebar */}
-      <aside className={`fixed lg:relative z-50 h-screen ${sidebarOpen ? 'w-72' : 'w-0 lg:w-20'} ${theme.sidebar} backdrop-blur-xl border-r ${theme.sidebarBorder} flex flex-col transition-all duration-300 overflow-hidden`}>
+      <aside className={`fixed lg:relative z-50 h-screen ${sidebarOpen ? 'w-72' : 'w-0 lg:w-20'} ${theme.sidebar} border-r ${theme.sidebarBorder} flex flex-col transition-all duration-300 overflow-hidden`}>
         {/* Logo/Header */}
         <div className={`p-4 border-b ${theme.sidebarBorder}`}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-neutral-600 flex items-center justify-center shadow-lg shadow-neutral-500/20 flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-neutral-600 flex items-center justify-center flex-shrink-0">
               <BookOpen className="w-5 h-5 text-white" />
             </div>
             {sidebarOpen && (
@@ -8503,7 +8569,7 @@ export default function TextAnalysisApp() {
             <button
               onClick={processCorpus}
               disabled={isProcessing}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-neutral-700 rounded-xl font-medium text-white hover:shadow-lg hover:shadow-neutral-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-neutral-700 rounded-xl font-medium text-white hover:bg-neutral-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
               {isProcessing ? (
                 <>
@@ -8530,7 +8596,7 @@ export default function TextAnalysisApp() {
                 disabled={tab.disabled}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                   activeTab === tab.id
-                    ? 'bg-neutral-800 text-neutral-400 border border-neutral-500/30'
+                    ? 'bg-neutral-700 text-neutral-100'
                     : tab.disabled
                       ? `${isDarkMode ? 'text-neutral-600' : 'text-neutral-400'} cursor-not-allowed`
                       : `${theme.muted} ${theme.hover} hover:text-neutral-400`
@@ -8556,7 +8622,7 @@ export default function TextAnalysisApp() {
                 <div className={`text-xs ${theme.muted}`}>Docs</div>
               </div>
               <div className={`${isDarkMode ? 'bg-neutral-900/50' : 'bg-white'} rounded-lg p-2 shadow-sm`}>
-                <div className="text-lg font-bold text-purple-500">{analysisResults.stats?.totalWords?.toLocaleString() || 0}</div>
+                <div className="text-lg font-bold text-neutral-300">{analysisResults.stats?.totalWords?.toLocaleString() || 0}</div>
                 <div className={`text-xs ${theme.muted}`}>Palavras</div>
               </div>
             </div>
@@ -8576,7 +8642,7 @@ export default function TextAnalysisApp() {
               </div>
               <div className="text-xs">
                 <span className={theme.muted}>com </span>
-                <span className="text-purple-500">Claude</span>
+                <span className="text-neutral-400">Claude</span>
                 <span className={theme.muted}> para </span>
                 <span className={`font-medium ${theme.text}`}>UFABC</span>
               </div>
@@ -8617,18 +8683,18 @@ export default function TextAnalysisApp() {
         {activeTab === 'upload' && (
           <div className="space-y-8">
             {/* ========== GERENCIADOR DE CORPUS ========== */}
-            <div className={`${isDarkMode ? 'bg-gradient-to-br from-neutral-800/50 to-purple-900/20 border-purple-500/30' : 'bg-gradient-to-br from-white to-purple-50 border-purple-200'} rounded-2xl p-6 border`}>
+            <div className=`${isDarkMode ? 'bg-neutral-900 border-neutral-700' : 'bg-white border-neutral-200'} rounded-2xl p-6 border`>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <Layers className="w-5 h-5 text-purple-400" />
+                  <Layers className="w-5 h-5 text-neutral-400" />
                   <h3 className="font-semibold">Gerenciador de Corpus</h3>
-                  <span className={`text-xs ${isDarkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-600'} px-2 py-0.5 rounded`}>
+                  <span className={`text-xs ${isDarkMode ? 'bg-neutral-700 text-neutral-300' : 'bg-neutral-200 text-neutral-600'} px-2 py-0.5 rounded`}>
                     {(corpora || []).length} corpus
                   </span>
                 </div>
                 <button
                   onClick={() => setShowCorpusManager(!showCorpusManager)}
-                  className={`text-sm ${isDarkMode ? 'text-purple-400 hover:text-purple-300' : 'text-purple-600 hover:text-purple-700'} flex items-center gap-1`}
+                  className={`text-sm ${isDarkMode ? 'text-neutral-400 hover:text-neutral-300' : 'text-neutral-600 hover:text-neutral-700'} flex items-center gap-1`}
                 >
                   {showCorpusManager ? 'Ocultar' : 'Expandir'}
                   <ChevronDown className={`w-4 h-4 transition-transform ${showCorpusManager ? 'rotate-180' : ''}`} />
@@ -8739,19 +8805,12 @@ export default function TextAnalysisApp() {
                   </span>
                 </p>
                 <div className="flex flex-wrap justify-center gap-2">
-                  {[
-                    { ext: 'PDF', colorDark: 'bg-red-500/20 text-red-300', colorLight: 'bg-red-100 text-red-600' },
-                    { ext: 'DOCX', colorDark: 'bg-blue-500/20 text-blue-300', colorLight: 'bg-blue-100 text-blue-600' },
-                    { ext: 'DOC', colorDark: 'bg-blue-500/20 text-blue-300', colorLight: 'bg-blue-100 text-blue-600' },
-                    { ext: 'TXT', colorDark: 'bg-neutral-500/20 text-neutral-300', colorLight: 'bg-neutral-200 text-neutral-600' },
-                    { ext: 'CSV', colorDark: 'bg-green-500/20 text-green-300', colorLight: 'bg-green-100 text-green-600' },
-                    { ext: 'XLSX', colorDark: 'bg-emerald-500/20 text-emerald-300', colorLight: 'bg-emerald-100 text-emerald-600' },
-                    { ext: 'RTF', colorDark: 'bg-purple-500/20 text-purple-300', colorLight: 'bg-purple-100 text-purple-600' },
-                    { ext: 'MD', colorDark: 'bg-neutral-500/20 text-neutral-300', colorLight: 'bg-neutral-200 text-neutral-600' },
-                    { ext: 'HTML', colorDark: 'bg-orange-500/20 text-orange-300', colorLight: 'bg-orange-100 text-orange-600' },
-                    { ext: 'JSON', colorDark: 'bg-yellow-500/20 text-yellow-300', colorLight: 'bg-yellow-100 text-yellow-700' },
-                    { ext: 'XML', colorDark: 'bg-neutral-500/20 text-neutral-200', colorLight: 'bg-neutral-100 text-neutral-600' },
-                    { ext: 'ODT', colorDark: 'bg-indigo-500/20 text-indigo-300', colorLight: 'bg-indigo-100 text-indigo-600' },
+                  {['PDF', 'DOCX', 'DOC', 'TXT', 'CSV', 'XLSX', 'RTF', 'MD', 'HTML', 'JSON', 'XML', 'ODT'].map(ext => (
+                    <span key={ext} className={`text-xs px-2 py-1 rounded ${isDarkMode ? 'bg-neutral-800 text-neutral-400' : 'bg-neutral-200 text-neutral-600'}`}>
+                      .{ext.toLowerCase()}
+                    </span>
+                  ))}
+                    </span>
                   ].map(format => (
                     <span key={format.ext} className={`text-xs px-2 py-1 rounded ${isDarkMode ? format.colorDark : format.colorLight}`}>
                       .{format.ext.toLowerCase()}
@@ -8797,18 +8856,18 @@ export default function TextAnalysisApp() {
             )}
             
             {/* ========== GERENCIADOR DE STOPWORDS ========== */}
-            <div className={`${isDarkMode ? 'bg-gradient-to-br from-neutral-800/50 to-amber-900/20 border-amber-500/30' : 'bg-gradient-to-br from-white to-amber-50 border-amber-200'} rounded-2xl p-6 border`}>
+            <div className=`${isDarkMode ? 'bg-neutral-900 border-neutral-700' : 'bg-white border-neutral-200'} rounded-2xl p-6 border`>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <Filter className="w-5 h-5 text-amber-400" />
+                  <Filter className="w-5 h-5 text-neutral-400" />
                   <h3 className="font-semibold">Gerenciador de Stopwords</h3>
-                  <span className={`text-xs ${isDarkMode ? 'bg-amber-500/20 text-amber-300' : 'bg-amber-100 text-amber-600'} px-2 py-0.5 rounded`}>
+                  <span className={`text-xs ${isDarkMode ? 'bg-neutral-700 text-neutral-300' : 'bg-neutral-200 text-neutral-600'} px-2 py-0.5 rounded`}>
                     {customStopwordsPT.length + customStopwordsEN.length} palavras
                   </span>
                 </div>
                 <button
                   onClick={() => setShowStopwordsManager(!showStopwordsManager)}
-                  className={`text-sm ${isDarkMode ? 'text-amber-400 hover:text-amber-300' : 'text-amber-600 hover:text-amber-700'} flex items-center gap-1`}
+                  className={`text-sm ${isDarkMode ? 'text-neutral-400 hover:text-neutral-300' : 'text-neutral-600 hover:text-neutral-700'} flex items-center gap-1`}
                 >
                   {showStopwordsManager ? 'Ocultar' : 'Gerenciar'}
                   <ChevronDown className={`w-4 h-4 transition-transform ${showStopwordsManager ? 'rotate-180' : ''}`} />
@@ -8937,6 +8996,8 @@ export default function TextAnalysisApp() {
                   { key: 'removeNumbers', label: 'Remover números' },
                   { key: 'removePunctuation', label: 'Remover pontuação' },
                   { key: 'removeStopwords', label: 'Remover stopwords' },
+                  { key: 'removeNames', label: 'Remover nomes/sobrenomes' },
+                  { key: 'removeTimestamps', label: 'Remover minutagem' },
                 ].map(opt => (
                   <label key={opt.key} className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -8963,19 +9024,19 @@ export default function TextAnalysisApp() {
               
               {/* Opção de Agrupamento Morfológico - Destacada */}
               <div className={`mt-4 p-4 rounded-xl border ${cleaningOptions.groupVariations 
-                ? (isDarkMode ? 'bg-purple-900/20 border-purple-500/30' : 'bg-purple-50 border-purple-200') 
-                : (isDarkMode ? 'bg-neutral-900/50 border-neutral-600' : 'bg-neutral-50 border-neutral-200')} transition-all`}>
+                ? (isDarkMode ? 'bg-neutral-800/50 border-neutral-600' : 'bg-neutral-50 border-neutral-300') 
+                : (isDarkMode ? 'bg-neutral-900/50 border-neutral-700' : 'bg-neutral-50 border-neutral-200')} transition-all`}>
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={cleaningOptions.groupVariations}
                     onChange={(e) => setCleaningOptions(prev => ({ ...prev, groupVariations: e.target.checked }))}
-                    className={`w-5 h-5 mt-0.5 rounded ${isDarkMode ? 'border-neutral-600 bg-neutral-700' : 'border-neutral-300 bg-white'} text-purple-500 focus:ring-purple-500`}
+                    className={`w-5 h-5 mt-0.5 rounded ${isDarkMode ? 'border-neutral-600 bg-neutral-700' : 'border-neutral-300 bg-white'} text-neutral-400 focus:ring-neutral-500`}
                   />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className={`text-sm font-medium ${theme.text}`}>Agrupar variações morfológicas</span>
-                      <span className={`text-xs ${isDarkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-600'} px-2 py-0.5 rounded`}>Recomendado</span>
+                      <span className={`text-xs ${isDarkMode ? 'bg-neutral-700 text-neutral-300' : 'bg-neutral-200 text-neutral-600'} px-2 py-0.5 rounded`}>Recomendado</span>
                     </div>
                     <p className={`text-xs ${theme.textMuted} mt-1`}>
                       Agrupa automaticamente variações de gênero (ministro/ministra), número (singular/plural), 
@@ -9640,7 +9701,7 @@ export default function TextAnalysisApp() {
             {/* Comunidades Detectadas */}
             <div className={`${theme.card} rounded-2xl p-6 border ${theme.cardBorder}`}>
               <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Layers className="w-5 h-5 text-purple-400" />
+                <Layers className="w-5 h-5 text-neutral-400" />
                 Comunidades Detectadas (Louvain)
               </h3>
               <CommunitiesPanel networkAnalysis={networkAnalysis} isDarkMode={isDarkMode} />
@@ -9995,7 +10056,7 @@ export default function TextAnalysisApp() {
                 {documents.length === 0 ? (
                   <div className={`rounded-2xl p-12 border text-center ${isDarkMode ? 'bg-neutral-800/50 border-neutral-700' : 'bg-white border-neutral-200'}`}>
                     <FileText className={`w-12 h-12 mx-auto mb-4 ${isDarkMode ? 'text-neutral-600' : 'text-neutral-400'}`} />
-                    <p className={theme.muted}>Importe documentos na aba "Importar" para começar a codificar</p>
+                    <p className={theme.muted}>Importe documentos na aba "Home" para começar a codificar</p>
                   </div>
                 ) : (
                   documents.map(doc => (
