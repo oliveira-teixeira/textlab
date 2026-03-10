@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import { Upload, FileText, Download, Sparkles, Network, BarChart3, Cloud, Search, Zap, BookOpen, Filter, Settings, ChevronRight, X, Check, Loader2, Eye, Trash2, RefreshCw, PieChart, TrendingUp, Hash, MessageCircle, Layers, GitBranch, Activity, Tag, ChevronDown, Plus, Save, Grid, LayoutGrid, Target, CircleDot, Sun, Moon, Edit2, Menu, FileSpreadsheet, Code, AlignLeft } from "lucide-react";
+import { Upload, FileText, Download, Sparkles, Network, BarChart3, Cloud, Search, Zap, BookOpen, Filter, Settings, ChevronRight, ChevronLeft, X, Check, Loader2, Eye, Trash2, RefreshCw, PieChart, TrendingUp, Hash, MessageCircle, Layers, GitBranch, Activity, Tag, ChevronDown, Plus, Save, Grid, LayoutGrid, Target, CircleDot, Sun, Moon, Edit2, Menu, FileSpreadsheet, Code, AlignLeft } from "lucide-react";
 import _ from "lodash";
 
 // ==================== GLOBAL THEME UTILITY ====================
@@ -476,6 +476,132 @@ const ZoomPanSVG = ({ children, width = 800, height = 600 }) => {
 };
 
 
+
+// ==================== UNIVERSAL FORCE-DIRECTED LAYOUT ====================
+/**
+ * Universal force-directed layout with collision avoidance.
+ * Works for any graph: network, bigram, AFC scatter, cluster, etc.
+ * @param {Array} nodes - [{id, x, y, radius, weight?, ...}] initial positions
+ * @param {Array} edges - [{source, target, weight?}] optional edges for attraction
+ * @param {Object} opts - configuration
+ * @returns {Array} nodes with updated x, y positions
+ */
+const forceDirectedLayout = (nodes, edges = [], opts = {}) => {
+  const {
+    width = 700,
+    height = 500,
+    iterations = 150,
+    repulsionStrength = 2500,
+    attractionStrength = 0.006,
+    gravityStrength = 0.012,
+    collisionBuffer = 18,
+    idealEdgeLength = 80,
+    coolingFactor = 10,
+    padding = 30,
+  } = opts;
+
+  if (!nodes || nodes.length === 0) return nodes;
+
+  const cX = width / 2, cY = height / 2;
+  const result = nodes.map(n => ({ ...n }));
+  const nodeMap = new Map(result.map(n => [n.id, n]));
+
+  for (let iter = 0; iter < iterations; iter++) {
+    const t = coolingFactor * (1 - iter / iterations);
+    const damping = t * 0.05;
+
+    // Repulsion between all pairs with collision avoidance
+    for (let i = 0; i < result.length; i++) {
+      for (let j = i + 1; j < result.length; j++) {
+        const a = result[i], b = result[j];
+        let dx = a.x - b.x, dy = a.y - b.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 0.5;
+        const minDist = (a.radius || 10) + (b.radius || 10) + collisionBuffer;
+
+        // Coulomb repulsion + hard collision push
+        let force = repulsionStrength / (dist * dist);
+        if (dist < minDist) {
+          force += (minDist - dist) * 3; // strong push when overlapping
+        }
+
+        const fx = (dx / dist) * force * damping;
+        const fy = (dy / dist) * force * damping;
+        a.x += fx; a.y += fy;
+        b.x -= fx; b.y -= fy;
+      }
+    }
+
+    // Edge attraction (Hooke's law)
+    edges.forEach(edge => {
+      const s = nodeMap.get(edge.source);
+      const tgt = nodeMap.get(edge.target);
+      if (!s || !tgt) return;
+      const dx = tgt.x - s.x, dy = tgt.y - s.y;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      const force = (dist - idealEdgeLength) * attractionStrength * (edge.weight || 1) * damping;
+      const fx = (dx / dist) * force, fy = (dy / dist) * force;
+      s.x += fx; s.y += fy;
+      tgt.x -= fx; tgt.y -= fy;
+    });
+
+    // Gravity toward center + bounds clamping
+    result.forEach(n => {
+      const r = n.radius || 10;
+      n.x += (cX - n.x) * gravityStrength * damping;
+      n.y += (cY - n.y) * gravityStrength * damping;
+      n.x = Math.max(r + padding, Math.min(width - r - padding, n.x));
+      n.y = Math.max(r + padding, Math.min(height - r - padding, n.y));
+    });
+  }
+
+  return result;
+};
+
+/**
+ * Label collision resolver - pushes overlapping text labels apart.
+ * Run AFTER force layout on positioned nodes to fix label overlaps.
+ * @param {Array} nodes - [{x, y, label, fontSize?, ...}]
+ * @param {Object} opts - {iterations, padding}
+ * @returns {Array} nodes with added labelX, labelY offsets
+ */
+const resolveLabelCollisions = (nodes, opts = {}) => {
+  const { iterations = 30, padding = 4, charWidth = 5.5 } = opts;
+  if (!nodes || nodes.length < 2) return nodes;
+
+  const labels = nodes.map(n => ({
+    ref: n,
+    x: n.labelX ?? n.x,
+    y: n.labelY ?? (n.y - (n.radius || 10) - 6),
+    w: (n.label || n.id || '').length * charWidth * ((n.fontSize || 10) / 10),
+    h: (n.fontSize || 10) + 2,
+  }));
+
+  for (let iter = 0; iter < iterations; iter++) {
+    for (let i = 0; i < labels.length; i++) {
+      for (let j = i + 1; j < labels.length; j++) {
+        const a = labels[i], b = labels[j];
+        const overlapX = (a.w / 2 + b.w / 2 + padding) - Math.abs(a.x - b.x);
+        const overlapY = (a.h / 2 + b.h / 2 + padding) - Math.abs(a.y - b.y);
+        if (overlapX > 0 && overlapY > 0) {
+          const pushX = overlapX * 0.5 * Math.sign(a.x - b.x || 1);
+          const pushY = overlapY * 0.5 * Math.sign(a.y - b.y || 1);
+          if (overlapY < overlapX) {
+            a.y += pushY; b.y -= pushY;
+          } else {
+            a.x += pushX; b.x -= pushX;
+          }
+        }
+      }
+    }
+  }
+
+  labels.forEach(l => {
+    l.ref.labelX = l.x;
+    l.ref.labelY = l.y;
+  });
+
+  return nodes;
+};
 
 // ==================== BEZIER CURVE HELPER ====================
 // Helper function to create smooth bezier curves instead of straight lines
@@ -2930,55 +3056,16 @@ const NetworkGraph = ({ cooccurrences, width = 700, height = 500, fullText, docu
       node.radius = 5 + (node.weight / maxWeight) * 20;
     });
 
-    // Force-directed layout with collision avoidance (150 iterations)
-    const nodeMap = new Map(nodeArray.map(n => [n.id, n]));
-    const temperature = 10;
+    // Force-directed layout with universal collision avoidance
+    const edgesForLayout = topLinks.map(l => ({ source: l.source, target: l.target, weight: l.weight }));
+    const positioned = forceDirectedLayout(nodeArray, edgesForLayout, {
+      width, height, iterations: 180, repulsionStrength: 2800,
+      collisionBuffer: 20, idealEdgeLength: 85, padding: 15,
+    });
+    // Apply label collision resolution
+    const finalNodes = resolveLabelCollisions(positioned.map(n => ({ ...n, label: n.id })));
 
-    for (let iter = 0; iter < 150; iter++) {
-      const t = temperature * (1 - iter / 150); // cooling
-
-      // Repulsion between all nodes (with collision avoidance)
-      for (let i = 0; i < nodeArray.length; i++) {
-        for (let j = i + 1; j < nodeArray.length; j++) {
-          const n1 = nodeArray[i], n2 = nodeArray[j];
-          const dx = n1.x - n2.x;
-          const dy = n1.y - n2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const minDist = n1.radius + n2.radius + 15; // collision buffer
-          const repulsion = Math.max(2000 / (dist * dist), minDist > dist ? (minDist - dist) * 2 : 0);
-          const fx = (dx / dist) * repulsion * t * 0.05;
-          const fy = (dy / dist) * repulsion * t * 0.05;
-          n1.x += fx; n1.y += fy;
-          n2.x -= fx; n2.y -= fy;
-        }
-      }
-
-      // Attraction along edges
-      topLinks.forEach(link => {
-        const s = nodeMap.get(link.source);
-        const tgt = nodeMap.get(link.target);
-        if (!s || !tgt) return;
-        const dx = tgt.x - s.x;
-        const dy = tgt.y - s.y;
-        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        const force = (dist - 80) * 0.005 * link.weight * t * 0.05;
-        const fx = (dx / dist) * force;
-        const fy = (dy / dist) * force;
-        s.x += fx; s.y += fy;
-        tgt.x -= fx; tgt.y -= fy;
-      });
-
-      // Gravity toward center
-      nodeArray.forEach(n => {
-        n.x += (centerX - n.x) * 0.01 * t * 0.05;
-        n.y += (centerY - n.y) * 0.01 * t * 0.05;
-        // Keep within bounds
-        n.x = Math.max(n.radius + 10, Math.min(width - n.radius - 10, n.x));
-        n.y = Math.max(n.radius + 10, Math.min(height - n.radius - 10, n.y));
-      });
-    }
-
-    return { nodes: nodeArray, links: topLinks, maxWeight };
+    return { nodes: finalNodes, links: topLinks, maxWeight };
   }, [cooccurrences, width, height]);
 
   const nodeMap = useMemo(() => {
@@ -4532,7 +4619,7 @@ const SpecificitiesPanel = ({ statisticalAnalysis }) => {
 
 // ==================== VISUALIZAÇÃO DE ÁRVORE DE PALAVRAS ====================
 
-const WordTreeVisualization = ({ wordTree, width = 900, height = 500 }) => {
+const WordTreeVisualization = ({ wordTree, width = 900, height = 500, onRemoveWord }) => {
   const [hoveredBranch, setHoveredBranch] = useState(null);
   const [tooltip, setTooltip] = useState(null);
 
@@ -4649,6 +4736,16 @@ const WordTreeVisualization = ({ wordTree, width = 900, height = 500 }) => {
                   {branch.count}× ocorrências
                 </text>
               )}
+              {/* Remove word button */}
+              {isHovered && onRemoveWord && (
+                <g
+                  onClick={(e) => { e.stopPropagation(); onRemoveWord(branch.path); }}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <circle cx={endX - 8} cy={y - 10} r={7} fill="#ef4444" opacity={0.85}/>
+                  <text x={endX - 8} y={y - 6.5} textAnchor="middle" fill="#fff" fontSize={10} fontWeight={700}>×</text>
+                </g>
+              )}
             </g>
           );
         })}
@@ -4714,6 +4811,16 @@ const WordTreeVisualization = ({ wordTree, width = 900, height = 500 }) => {
                   {branch.count}× ocorrências
                 </text>
               )}
+              {/* Remove word button */}
+              {isHovered && onRemoveWord && (
+                <g
+                  onClick={(e) => { e.stopPropagation(); onRemoveWord(branch.path); }}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <circle cx={endX + 8} cy={y - 10} r={7} fill="#ef4444" opacity={0.85}/>
+                  <text x={endX + 8} y={y - 6.5} textAnchor="middle" fill="#fff" fontSize={10} fontWeight={700}>×</text>
+                </g>
+              )}
             </g>
           );
         })}
@@ -4768,49 +4875,17 @@ const BigramNetworkVisualization = ({ bigramNetwork, width = 800, height = 600 }
       return { id: node.id, x: cX + Math.cos(angle) * radius, y: cY + Math.sin(angle) * radius, degree: node.degree, weight: node.totalWeight, radius: nodeSize };
     });
 
-    const posMap = new Map(pos.map(p => [p.id, p]));
+    // Universal force-directed layout with collision avoidance
+    const edgesForLayout = edges.map(e => ({ source: e.source, target: e.target, weight: e.weight || 1 }));
+    const positioned = forceDirectedLayout(pos, edgesForLayout, {
+      width, height, iterations: 150, repulsionStrength: 2200,
+      collisionBuffer: 15, idealEdgeLength: 75, padding: 45,
+      coolingFactor: 8,
+    });
+    // Resolve label overlaps
+    const finalPos = resolveLabelCollisions(positioned.map(p => ({ ...p, label: p.id })));
 
-    // Enhanced force-directed (120 iterations with cooling)
-    for (let iter = 0; iter < 120; iter++) {
-      const t = 8 * (1 - iter / 120);
-
-      // Repulsion with collision avoidance
-      for (let i = 0; i < pos.length; i++) {
-        for (let j = i + 1; j < pos.length; j++) {
-          const p1 = pos[i], p2 = pos[j];
-          const dx = p1.x - p2.x, dy = p1.y - p2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const minDist = (p1.radius || 10) + (p2.radius || 10) + 12;
-          const repulsion = Math.max(1500 / (dist * dist), minDist > dist ? (minDist - dist) * 3 : 0);
-          const fx = (dx / dist) * repulsion * t * 0.04;
-          const fy = (dy / dist) * repulsion * t * 0.04;
-          p1.x += fx; p1.y += fy;
-          p2.x -= fx; p2.y -= fy;
-        }
-      }
-
-      // Edge attraction
-      edges.forEach(edge => {
-        const p1 = posMap.get(edge.source), p2 = posMap.get(edge.target);
-        if (!p1 || !p2) return;
-        const dx = p2.x - p1.x, dy = p2.y - p1.y;
-        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        const force = (dist - 70) * 0.008 * (edge.weight || 1) * t * 0.04;
-        const fx = (dx / dist) * force, fy = (dy / dist) * force;
-        p1.x += fx; p1.y += fy;
-        p2.x -= fx; p2.y -= fy;
-      });
-
-      // Gravity + bounds
-      pos.forEach(p => {
-        p.x += (cX - p.x) * 0.008 * t * 0.04;
-        p.y += (cY - p.y) * 0.008 * t * 0.04;
-        p.x = Math.max(50, Math.min(width - 50, p.x));
-        p.y = Math.max(40, Math.min(height - 40, p.y));
-      });
-    }
-
-    setPositions(pos);
+    setPositions(finalPos);
   }, [bigramNetwork, width, height]);
 
   if (!bigramNetwork?.nodes?.length) {
@@ -5206,6 +5281,20 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
 
   const maxCount = Math.max(...words.map(w => w.count));
 
+  // Resolve label collisions for AFC scatter points
+  const positionedWords = useMemo(() => {
+    const pts = words.map(w => ({
+      ...w,
+      px: xScale(w.x),
+      py: yScale(w.y),
+      radius: 3 + (w.count / maxCount) * 10,
+      label: w.word,
+      fontSize: Math.max(9, Math.min(14, 8 + (w.count / maxCount) * 6)),
+    }));
+    // Run label collision resolution
+    return resolveLabelCollisions(pts, { iterations: 40, padding: 3, charWidth: 5 });
+  }, [words, maxCount]);
+
   return (
     <ZoomPanSVG width={width} height={height}>
       <svg width={width} height={height} className="bg-slate-900/30 rounded-xl">
@@ -5277,9 +5366,11 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
         ))}
 
         {/* Palavras */}
-        {words.map((w, idx) => {
-          const x = xScale(w.x);
-          const y = yScale(w.y);
+        {positionedWords.map((w, idx) => {
+          const x = w.px;
+          const y = w.py;
+          const labelX = w.labelX ?? x;
+          const labelY = w.labelY ?? (y - w.radius - 3);
           const isHovered = hoveredWord === w.word;
           const size = 3 + (w.count / maxCount) * 8;
           const color = getColor(w.x, w.y);
@@ -5304,8 +5395,8 @@ const AFCVisualization = ({ afcData, width = 800, height = 600 }) => {
               />
               {(showLabels || isHovered) && w.count > maxCount * 0.05 && (
                 <text
-                  x={x}
-                  y={y - size - 3}
+                  x={labelX}
+                  y={labelY}
                   textAnchor="middle"
                   fill={isHovered ? '#fff' : color}
                   fontSize={isHovered ? 12 : 9}
@@ -6162,6 +6253,8 @@ export default function TextAnalysisApp() {
   const [sentimentAnalysis, setSentimentAnalysis] = useState(null);
   const [wordTreeData, setWordTreeData] = useState(null);
   const [wordTreeKeyword, setWordTreeKeyword] = useState('');
+  const [wordTreeExcluded, setWordTreeExcluded] = useState(new Set());
+  const [wordTreeNavIndex, setWordTreeNavIndex] = useState(-1);
   const [afcData, setAfcData] = useState(null);
   
   // Estado para persistência de documentos
@@ -7412,12 +7505,18 @@ export default function TextAnalysisApp() {
   }, [kwicKeyword, filteredDocuments]);
   
   // Função para construir árvore de palavras
-  const buildWordTreeFromKeyword = useCallback(() => {
-    if (!wordTreeKeyword.trim() || !analysisResults?.fullText) return;
-    
-    const tree = buildWordTree(analysisResults.fullText, wordTreeKeyword.trim(), 30, 5, cleaningOptions.minLength);
+  const buildWordTreeFromKeyword = useCallback((keyword = null, excluded = null) => {
+    const word = keyword || wordTreeKeyword.trim();
+    const excl = excluded || wordTreeExcluded;
+    if (!word || !analysisResults?.fullText) return;
+
+    const tree = buildWordTree(analysisResults.fullText, word, 30, 5, cleaningOptions.minLength);
+    if (tree && excl.size > 0) {
+      tree.left = (tree.left || []).filter(b => !Array.from(excl).some(ex => b.path.toLowerCase().includes(ex.toLowerCase())));
+      tree.right = (tree.right || []).filter(b => !Array.from(excl).some(ex => b.path.toLowerCase().includes(ex.toLowerCase())));
+    }
     setWordTreeData(tree);
-  }, [wordTreeKeyword, analysisResults, cleaningOptions.minLength]);
+  }, [wordTreeKeyword, wordTreeExcluded, analysisResults, cleaningOptions.minLength]);
   
   // Função para converter dados para CSV
   const arrayToCSV = (data, headers) => {
@@ -9016,8 +9115,8 @@ export default function TextAnalysisApp() {
           <div className={`rounded-2xl p-6 border ${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-200'}`}>
             <VisualizationHeader vizKey="wordtree" icon={GitBranch} extraContent={
               wordTreeData && (
-                <ExportVisualizationButton 
-                  vizId="wordtree" 
+                <ExportVisualizationButton
+                  vizId="wordtree"
                   filename={`arvore-${wordTreeKeyword}`}
                   data={[
                     ...(wordTreeData.left || []).map(b => ({ direcao: 'esquerda', contexto: b.path, frequencia: b.count })),
@@ -9026,9 +9125,9 @@ export default function TextAnalysisApp() {
                 />
               )
             } />
-            
+
             {/* Input para palavra central */}
-            <div className="flex gap-3 mb-6">
+            <div className="flex gap-3 mb-4">
               <div className="flex-1">
                 <input
                   type="text"
@@ -9040,24 +9139,116 @@ export default function TextAnalysisApp() {
                 />
               </div>
               <button
-                onClick={buildWordTreeFromKeyword}
+                onClick={() => buildWordTreeFromKeyword()}
                 disabled={!wordTreeKeyword.trim()}
                 className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-medium hover:shadow-lg hover:shadow-cyan-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Gerar Árvore
               </button>
             </div>
-            
+
+            {/* Navegação entre palavras frequentes */}
+            {analysisResults.wordFrequency && analysisResults.wordFrequency.length > 0 && (
+              <div className="mb-4 flex items-center gap-3">
+                <span className="text-xs text-slate-500 uppercase tracking-wider">Navegar:</span>
+                <button
+                  onClick={() => {
+                    const freqs = analysisResults.wordFrequency;
+                    const newIdx = wordTreeNavIndex <= 0 ? freqs.length - 1 : wordTreeNavIndex - 1;
+                    setWordTreeNavIndex(newIdx);
+                    const w = freqs[newIdx].word;
+                    setWordTreeKeyword(w);
+                    setWordTreeExcluded(new Set());
+                    const tree = buildWordTree(analysisResults.fullText, w, 30, 5, cleaningOptions.minLength);
+                    setWordTreeData(tree);
+                  }}
+                  className="p-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white transition-colors"
+                  title="Palavra anterior"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-700/50 rounded-lg min-w-[200px] justify-center">
+                  {wordTreeNavIndex >= 0 ? (
+                    <>
+                      <span className="text-cyan-400 font-bold text-sm">
+                        {analysisResults.wordFrequency[wordTreeNavIndex]?.word}
+                      </span>
+                      <span className="text-slate-500 text-xs">
+                        ({analysisResults.wordFrequency[wordTreeNavIndex]?.count}×) — #{wordTreeNavIndex + 1} de {Math.min(analysisResults.wordFrequency.length, 50)}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-slate-500 text-sm">Clique ◀ ▶ para navegar</span>
+                  )}
+                </div>
+                <button
+                  onClick={() => {
+                    const freqs = analysisResults.wordFrequency;
+                    const maxIdx = Math.min(freqs.length, 50);
+                    const newIdx = wordTreeNavIndex >= maxIdx - 1 ? 0 : wordTreeNavIndex + 1;
+                    setWordTreeNavIndex(newIdx);
+                    const w = freqs[newIdx].word;
+                    setWordTreeKeyword(w);
+                    setWordTreeExcluded(new Set());
+                    const tree = buildWordTree(analysisResults.fullText, w, 30, 5, cleaningOptions.minLength);
+                    setWordTreeData(tree);
+                  }}
+                  className="p-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white transition-colors"
+                  title="Próxima palavra"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            )}
+
+            {/* Palavras excluídas */}
+            {wordTreeExcluded.size > 0 && (
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <span className="text-xs text-slate-500 uppercase tracking-wider">Excluídas:</span>
+                {Array.from(wordTreeExcluded).map(word => (
+                  <span
+                    key={word}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 bg-red-900/30 border border-red-800/50 rounded-full text-xs text-red-300"
+                  >
+                    {word}
+                    <button
+                      onClick={() => {
+                        const next = new Set(wordTreeExcluded);
+                        next.delete(word);
+                        setWordTreeExcluded(next);
+                        buildWordTreeFromKeyword(null, next);
+                      }}
+                      className="ml-0.5 text-red-400 hover:text-white transition-colors font-bold"
+                      title="Restaurar palavra"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+                <button
+                  onClick={() => {
+                    setWordTreeExcluded(new Set());
+                    buildWordTreeFromKeyword(null, new Set());
+                  }}
+                  className="text-xs text-slate-500 hover:text-cyan-400 transition-colors underline ml-2"
+                >
+                  Limpar todas
+                </button>
+              </div>
+            )}
+
             {/* Sugestões de palavras frequentes */}
             {!wordTreeData && analysisResults.wordFrequency && (
               <div className="mb-6">
                 <p className="text-sm text-slate-400 mb-2">Sugestões (palavras mais frequentes):</p>
                 <div className="flex flex-wrap gap-2">
-                  {analysisResults.wordFrequency.slice(0, 15).map(w => (
+                  {analysisResults.wordFrequency.slice(0, 15).map((w, i) => (
                     <button
                       key={w.word}
                       onClick={() => {
                         setWordTreeKeyword(w.word);
+                        setWordTreeNavIndex(i);
+                        setWordTreeExcluded(new Set());
                         const tree = buildWordTree(analysisResults.fullText, w.word, 30, 5, cleaningOptions.minLength);
                         setWordTreeData(tree);
                       }}
@@ -9069,17 +9260,31 @@ export default function TextAnalysisApp() {
                 </div>
               </div>
             )}
-            
+
             {/* Visualização */}
             <div data-viz="wordtree" className="bg-slate-900/50 rounded-xl p-4 overflow-x-auto">
-              <WordTreeVisualization wordTree={wordTreeData} width={900} height={500} />
+              <WordTreeVisualization
+                wordTree={wordTreeData}
+                width={900}
+                height={500}
+                onRemoveWord={(path) => {
+                  const mainWord = path.trim().split(/\s+/)[0];
+                  const next = new Set(wordTreeExcluded);
+                  next.add(mainWord);
+                  setWordTreeExcluded(next);
+                  buildWordTreeFromKeyword(null, next);
+                }}
+              />
             </div>
-            
+
             {wordTreeData && (
               <div className="mt-4 text-sm text-slate-400">
                 Total de ocorrências encontradas: <span className="text-white font-medium">{wordTreeData.totalOccurrences || 0}</span>
                 {' • '}Contextos à esquerda: <span className="text-cyan-400">{wordTreeData.left?.length || 0}</span>
                 {' • '}Contextos à direita: <span className="text-purple-400">{wordTreeData.right?.length || 0}</span>
+                {wordTreeExcluded.size > 0 && (
+                  <span> • Palavras excluídas: <span className="text-red-400">{wordTreeExcluded.size}</span></span>
+                )}
               </div>
             )}
           </div>
