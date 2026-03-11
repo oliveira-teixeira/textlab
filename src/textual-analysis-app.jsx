@@ -3271,7 +3271,7 @@ const NetworkGraph = ({ cooccurrences, width = 700, height = 500, fullText, docu
             <div className="mt-2 border-t border-neutral-700 pt-2">
               <div className="text-xs text-neutral-500 mb-1">Trechos no corpus:</div>
               {tooltipData.excerpts.map((ex, i) => (
-                <div key={i} className="text-xs text-neutral-300 italic leading-relaxed mb-1 truncate">
+                <div key={i} className="text-xs text-neutral-300 italic leading-relaxed mb-1">
                   "...{ex}..."
                 </div>
               ))}
@@ -3322,7 +3322,7 @@ const ClusterVisualization = ({ chdResult }) => {
             <div className={`text-xs text-neutral-400`}>
               Classe {cluster.id + 1}
             </div>
-            <div className="text-xs text-neutral-500 mt-2 truncate">
+            <div className="text-xs text-neutral-500 mt-2">
               {cluster.topWords.slice(0, 3).map(w => w.word).join(', ')}
             </div>
           </button>
@@ -3354,7 +3354,7 @@ const ClusterVisualization = ({ chdResult }) => {
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {clusters[selectedCluster].segments.slice(0, 5).map((seg, idx) => (
               <div key={idx} className="text-sm text-neutral-300 p-3 bg-neutral-700/30 rounded-lg">
-                "{seg.text.slice(0, 200)}..."
+                "{seg.text}"
               </div>
             ))}
           </div>
@@ -3548,7 +3548,7 @@ const HeatmapVisualization = ({ cooccurrences, words, width = 700, height = 500 
               textAnchor="end"
               transform={`rotate(-45, ${i * cellSize + cellSize / 2}, -8)`}
             >
-              {word.length > 8 ? word.slice(0, 8) + '…' : word}
+              {word}
             </text>
           ))}
           
@@ -3562,7 +3562,7 @@ const HeatmapVisualization = ({ cooccurrences, words, width = 700, height = 500 
               fill="#94a3b8"
               textAnchor="end"
             >
-              {word.length > 10 ? word.slice(0, 10) + '…' : word}
+              {word}
             </text>
             ))}
           </g>
@@ -3713,7 +3713,7 @@ const TreemapVisualization = ({ words, width = 700, height = 500, onWordClick })
                     dominantBaseline="middle"
                     style={{ pointerEvents: 'none' }}
                   >
-                    {leaf.data.name.length > w / 8 ? leaf.data.name.slice(0, Math.floor(w / 8)) + '…' : leaf.data.name}
+                    {leaf.data.name}
                   </text>
                 )}
                 {w > 50 && h > 35 && (
@@ -3900,7 +3900,7 @@ const RadarVisualization = ({ codedSegments, codebook, width = 500, height = 500
                 textAnchor="middle"
                 dominantBaseline="middle"
               >
-                {d.axis.length > 12 ? d.axis.slice(0, 12) + '…' : d.axis}
+                {d.axis}
               </text>
             </g>
           );
@@ -4568,7 +4568,7 @@ const TFIDFPanel = ({ statisticalAnalysis, isDarkMode = true }) => {
                 onClick={() => setSelectedDoc(selectedDoc === doc.docId ? null : doc.docId)}
                 className={`w-full flex items-center justify-between p-3 ${t.hoverRow} transition-colors`}
               >
-                <span className="font-medium truncate">{doc.docName}</span>
+                <span className="font-medium">{doc.docName}</span>
                 <div className="flex items-center gap-2">
                   <span className={`text-sm ${t.textMuted}`}>{doc.totalTerms} termos</span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${selectedDoc === doc.docId ? 'rotate-180' : ''}`} />
@@ -5058,7 +5058,7 @@ const BigramNetworkVisualization = ({ bigramNetwork, width = 800, height = 600 }
             Grau: <span className="text-white">{positions.find(p => p.id === hoveredNode)?.degree}</span>
           </div>
           <div className="text-xs text-neutral-500 mt-1">
-            Conectado a: {[...connectedNodes].slice(0, 5).join(', ')}{connectedNodes.size > 5 ? '...' : ''}
+            Conectado a: {[...connectedNodes].join(', ')}
           </div>
         </div>
       )}
@@ -5209,9 +5209,7 @@ const TermsBerryVisualization = ({ words, width = 700, height = 700, onWordClick
                   fontWeight={isHovered ? 700 : 500}
                   pointerEvents="none"
                 >
-                  {circle.word.length > circle.r / 5
-                    ? circle.word.slice(0, Math.floor(circle.r / 5)) + '…'
-                    : circle.word}
+                  {circle.word}
                 </text>
               )}
             </g>
@@ -6523,7 +6521,7 @@ const CodeSelectionTooltip = ({
         <div className="mb-4 p-4 bg-neutral-800/80 rounded-xl border border-neutral-600">
           <p className="text-xs text-neutral-400 mb-2 uppercase tracking-wide font-medium">Texto selecionado:</p>
           <p className="text-sm text-neutral-200 leading-relaxed max-h-24 overflow-y-auto">
-            "{selectedText?.substring(0, 200)}{selectedText?.length > 200 ? '...' : ''}"
+            "{selectedText}"
           </p>
         </div>
         
@@ -6553,8 +6551,8 @@ const CodeSelectionTooltip = ({
                 style={{ backgroundColor: code.color }}
               />
               <div className="flex-1 min-w-0">
-                <p className="text-base text-white truncate font-medium">{code.name}</p>
-                <p className="text-sm text-neutral-500 truncate">{code.categoryName}</p>
+                <p className="text-base text-white font-medium">{code.name}</p>
+                <p className="text-sm text-neutral-500">{code.categoryName}</p>
               </div>
               <ChevronRight className="w-5 h-5 text-neutral-600 group-hover:text-neutral-400 transition-colors" />
             </button>
@@ -8884,7 +8882,7 @@ export default function TextAnalysisApp() {
                 title={!sidebarOpen ? tab.label : undefined}
               >
                 <tab.icon className={`w-5 h-5 flex-shrink-0 ${activeTab === tab.id ? 'text-neutral-400' : ''}`} />
-                {sidebarOpen && <span className="truncate">{tab.label}</span>}
+                {sidebarOpen && <span>{tab.label}</span>}
                 {activeTab === tab.id && sidebarOpen && (
                   <ChevronRight className="w-4 h-4 ml-auto text-neutral-400" />
                 )}
@@ -9473,7 +9471,7 @@ export default function TextAnalysisApp() {
                           className="h-full bg-neutral-800 rounded-lg flex items-center px-3"
                           style={{ width: `${(word.count / analysisResults.wordFrequency[0].count) * 100}%` }}
                         >
-                          <span className="text-sm font-medium truncate">{word.word}</span>
+                          <span className="text-sm font-medium">{word.word}</span>
                         </div>
                       </div>
                       <span className="w-12 text-right text-neutral-400 text-sm">{word.count}</span>
@@ -10074,7 +10072,7 @@ export default function TextAnalysisApp() {
                     cor: cls.color,
                     percentual: cls.percentage,
                     segmento: segIdx + 1,
-                    texto: seg.substring(0, 200)
+                    texto: seg
                   })) || []
                 ) || []}
               />
@@ -10292,7 +10290,7 @@ export default function TextAnalysisApp() {
                                     {codeName}
                                   </span>
                                   {codeKeywords.length > 0 && (
-                                    <p className="text-xs text-neutral-600 mt-0.5 truncate max-w-[200px] opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <p className="text-xs text-neutral-600 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                       {codeKeywords.slice(0, 3).join(', ')}...
                                     </p>
                                   )}
@@ -10529,7 +10527,7 @@ export default function TextAnalysisApp() {
                         </div>
                       ) : (
                         <p className={`text-sm mb-3 italic border-l-2 pl-3 ${isDarkMode ? 'text-neutral-300 border-neutral-600' : 'text-neutral-700 border-neutral-300'}`}>
-                          "{(segment.text || '').slice(0, 200)}{(segment.text?.length || 0) > 200 ? '...' : ''}"
+                          "{segment.text || ''}"
                         </p>
                       )}
                       
@@ -10668,8 +10666,8 @@ export default function TextAnalysisApp() {
                             style={{ backgroundColor: code.color }}
                           />
                           <div className="flex-1 min-w-0">
-                            <p className="text-base text-white truncate font-medium">{code.name}</p>
-                            <p className="text-sm text-neutral-500 truncate">{code.categoryName}</p>
+                            <p className="text-base text-white font-medium">{code.name}</p>
+                            <p className="text-sm text-neutral-500">{code.categoryName}</p>
                           </div>
                           {alreadyHasCode ? (
                             <Check className="w-5 h-5 text-green-400" />
@@ -10731,7 +10729,7 @@ export default function TextAnalysisApp() {
                 data={codedSegments.flatMap(s => s.codes.map(c => ({
                   documento: s.documentName,
                   codigo: c,
-                  texto: s.text.substring(0, 100)
+                  texto: s.text
                 })))}
               />
             </div>
@@ -10783,11 +10781,11 @@ export default function TextAnalysisApp() {
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {(kwicResults || []).map((result, idx) => (
                     <div key={idx} className="flex items-center gap-2 text-sm font-mono bg-neutral-700/30 p-3 rounded-lg">
-                      <span className="text-right text-neutral-400 flex-1 truncate">{result.left}</span>
+                      <span className="text-right text-neutral-400 flex-1">{result.left}</span>
                       <span className="px-2 py-1 bg-neutral-500/20 text-neutral-200 rounded font-bold whitespace-nowrap">
                         {result.keyword}
                       </span>
-                      <span className="text-left text-neutral-400 flex-1 truncate">{result.right}</span>
+                      <span className="text-left text-neutral-400 flex-1">{result.right}</span>
                     </div>
                   ))}
                 </div>
@@ -11223,7 +11221,7 @@ export default function TextAnalysisApp() {
                           <span className="text-neutral-400">...</span>
                         </div>
                         <div className="mt-2 text-xs text-neutral-500 italic border-l-2 border-neutral-600 pl-2">
-                          Frase: "{(occ.fullSentence || '').slice(0, 150)}{(occ.fullSentence?.length || 0) > 150 ? '...' : ''}"
+                          Frase: "{occ.fullSentence || ''}"
                         </div>
                       </div>
                     ))}
@@ -11240,7 +11238,7 @@ export default function TextAnalysisApp() {
                     <div className="space-y-2">
                       {(incidenceAnalysis.occurrencesByDocument || []).map((doc, idx) => (
                         <div key={idx} className="flex items-center gap-3 bg-neutral-800/30 rounded-lg p-3">
-                          <span className="text-sm font-medium text-neutral-300 flex-1 truncate">{doc.documentName}</span>
+                          <span className="text-sm font-medium text-neutral-300 flex-1">{doc.documentName}</span>
                           <span className="text-neutral-400 font-bold">{doc.count}x</span>
                           <span className="text-xs text-neutral-500">{doc.relativeFrequency}</span>
                         </div>
